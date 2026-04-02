@@ -1,30 +1,46 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@layer base {
+  @import "@xyflow/react/dist/style.css";
+}
 
 @theme {
   /* Backgrounds */
-  --color-bg-primary: oklch(0.97 0.015 10); /* soft pink-white */
-  --color-bg-secondary: oklch(0.93 0.04 10); /* light pink */
+  --color-bg-primary: oklch(0.9 0.06 300);
+  --color-bg-secondary: oklch(0.95 0.03 290);
+  --color-canvas: oklch(0.96 0.02 285);
 
   /* Nodes */
-  --color-node-bg: oklch(1 0 0); /* pure white */
-  --color-node-border: oklch(0.82 0.08 10); /* soft pink border */
-  --color-node-shadow: oklch(0.65 0.12 10 / 0.08);
+  --color-node-bg: oklch(0.97 0.01 285);
+  --color-node-border: oklch(0.72 0.16 295);
+  --color-node-shadow: oklch(0.55 0.08 285 / 0.12);
 
   /* Edges */
-  --color-edge: oklch(0.75 0.16 10); /* pink */
-  --color-edge-active: oklch(0.62 0.22 10); /* stronger pink */
+  --color-edge: oklch(0.35 0.02 285);
+  --color-edge-active: oklch(0.72 0.16 295);
 
   /* Text */
-  --color-text-primary: oklch(0.25 0.02 260); /* neutral dark */
-  --color-text-secondary: oklch(0.45 0.02 260); /* gray */
+  --color-text-primary: oklch(0.38 0.03 285);
+  --color-text-secondary: oklch(0.55 0.03 285);
+  --color-text-muted: oklch(0.7 0.02 285);
 
-  /* UI accents */
-  --color-accent: oklch(0.68 0.2 10); /* main pink */
-  --color-accent-hover: oklch(0.62 0.22 10); /* hover */
+  /* Violet accents */
+  --color-accent: oklch(0.72 0.16 295);
+  --color-accent-hover: oklch(0.64 0.2 295);
+  --color-accent-strong: oklch(0.58 0.24 290);
+
+  /* Teal accents */
+  --color-teal: oklch(0.78 0.14 185);
+  --color-teal-hover: oklch(0.72 0.16 185);
+
+  /* Surface helpers */
+  --color-toolbar-bg: oklch(0.99 0.01 285);
+  --color-dot: oklch(0.9 0.03 285);
 }
 
 :root {
-  background: var(--color-bg-primary);
+  background: var(--color-bg-canvas);
   color: var(--color-text-primary);
   font-family: var(--font-poppins);
 }
