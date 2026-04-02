@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  /* Backgrounds */
+  --color-bg-primary: oklch(0.97 0.015 10); /* soft pink-white */
+  --color-bg-secondary: oklch(0.93 0.04 10); /* light pink */
+
+  /* Nodes */
+  --color-node-bg: oklch(1 0 0); /* pure white */
+  --color-node-border: oklch(0.82 0.08 10); /* soft pink border */
+  --color-node-shadow: oklch(0.65 0.12 10 / 0.08);
+
+  /* Edges */
+  --color-edge: oklch(0.75 0.16 10); /* pink */
+  --color-edge-active: oklch(0.62 0.22 10); /* stronger pink */
+
+  /* Text */
+  --color-text-primary: oklch(0.25 0.02 260); /* neutral dark */
+  --color-text-secondary: oklch(0.45 0.02 260); /* gray */
+
+  /* UI accents */
+  --color-accent: oklch(0.68 0.2 10); /* main pink */
+  --color-accent-hover: oklch(0.62 0.22 10); /* hover */
+}
+
+:root {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-poppins);
+}
