@@ -1,7 +1,14 @@
-import { memo, useCallback } from "react";
-
-import { Position, useNodeId, useReactFlow } from "@xyflow/react";
-import { EllipsisVertical, Rocket, Trash } from "lucide-react";
+import { memo, useCallback, useState } from "react";
+import {
+  type Node,
+  ConnectionState,
+  NodeProps,
+  Position,
+  useConnection,
+  useNodeId,
+  useReactFlow,
+} from "@xyflow/react";
+import { EllipsisVertical, Plus } from "lucide-react";
 import { Button } from "../Button";
 import {
   DropdownMenu,
@@ -18,58 +25,94 @@ import {
   BaseNodeContent,
 } from "./BaseNode";
 import { BaseHandle } from "../handles/BaseHandle";
+import { ButtonHandle } from "../handles/ButtonHandle";
 
-export const CustomNode = memo(() => {
-  const id = useNodeId();
-  const { setNodes } = useReactFlow();
+type CustomNodeData = Node<{
+  label: string;
+  onAddClick?: (nodeId: string) => void;
+}>;
 
-  const handleDelete = useCallback(() => {
-    setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
-  }, [id, setNodes]);
+const selector = (connection: ConnectionState) => connection.inProgress;
 
-  return (
-    <BaseNode>
-      <BaseNodeHeader className="border-b">
-        <Rocket className="size-4" />
-        <BaseNodeHeaderTitle>Node With Actions</BaseNodeHeaderTitle>
+export const CustomNode = memo(
+  ({ data, selected }: NodeProps<CustomNodeData>) => {
+    const connectionInProgress = useConnection(selector);
+    const id = useNodeId();
+    const { setNodes, setEdges } = useReactFlow();
+    const [isHovered, setIsHovered] = useState(false);
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="nodrag p-1"
-              aria-label="Node Actions"
-              title="Node Actions"
+    const handleDelete = useCallback(() => {
+      if (!id) return;
+
+      setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
+      setEdges((prevEdges) =>
+        prevEdges.filter((edge) => edge.source !== id && edge.target !== id)
+      );
+    }, [id, setNodes, setEdges]);
+
+    const handleOpenPicker = useCallback(() => {
+      if (!id) return;
+      data.onAddClick?.(id);
+    }, [id, data]);
+
+    const showAddButton = Boolean(
+      !connectionInProgress && (isHovered || selected)
+    );
+
+    return (
+      <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <BaseNode>
+          <BaseNodeHeader className="border-b">
+            <BaseNodeHeaderTitle>{data.label}</BaseNodeHeaderTitle>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="nodrag p-1"
+                  aria-label="Node Actions"
+                  title="Node Actions"
+                >
+                  <EllipsisVertical className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Node Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleDelete}>
+                  Delete Node
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BaseNodeHeader>
+
+          <BaseNodeContent>
+            <BaseHandle id="target-1" type="target" position={Position.Top} />
+
+            <p>Add your content here.</p>
+
+            <ButtonHandle
+              id="source-1"
+              type="source"
+              position={Position.Bottom}
+              showButton={showAddButton}
             >
-              <EllipsisVertical className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Node Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleDelete}>
-              Delete Node
-            </DropdownMenuItem>
-            <DropdownMenuItem>Action 1</DropdownMenuItem>
-            <DropdownMenuItem>Action 2</DropdownMenuItem>
-            <DropdownMenuItem>Action 3</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <Button
-          variant="ghost"
-          className="nodrag p-1"
-          onClick={handleDelete}
-          aria-label="Delete Node"
-          title="Delete Node"
-        >
-          <Trash className="size-4" />
-        </Button>
-      </BaseNodeHeader>
-      <BaseNodeContent>
-        <BaseHandle id="target-1" type="target" position={Position.Bottom} />
-        <p>Add your content here.</p>
-      </BaseNodeContent>
-    </BaseNode>
-  );
-});
+              <Button
+                onClick={handleOpenPicker}
+                size="sm"
+                variant="default"
+                className="nodrag h-8 w-8 rounded-full p-0 shadow-md"
+              >
+                <Plus size={12} />
+              </Button>
+            </ButtonHandle>
+          </BaseNodeContent>
+        </BaseNode>
+      </div>
+    );
+  }
+);

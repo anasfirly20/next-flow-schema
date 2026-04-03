@@ -1,79 +1,62 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   ReactFlow,
-  applyNodeChanges,
-  applyEdgeChanges,
   addEdge,
   Background,
   Controls,
   MiniMap,
   Panel,
   useReactFlow,
+  useViewport,
   BackgroundVariant,
   type Node,
   type Edge,
   type FitViewOptions,
   type OnConnect,
-  type OnNodesChange,
-  type OnEdgesChange,
   type OnNodeDrag,
   type OnConnectEnd,
   type DefaultEdgeOptions,
   type NodeOrigin,
+  useEdgesState,
+  useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { DiamondNode } from "@/shared/ui/nodes/DiamondNode";
-import { TextUpdaterNode } from "@/shared/ui/nodes/TextUpdaterNode";
-import { Button } from "@/shared/ui/Button";
-import { Circle, Diamond, Save, Square } from "lucide-react";
-import { ActionBarNodeDemo } from "@/shared/ui/nodes/ActionBarNodeDemo";
-import { DevTools } from "@/shared/ui/Devtools";
-import ButtonHandleDemo from "@/shared/ui/handles/ButtonHandleDemo";
 
-const nodeTypes = {
-  textUpdater: TextUpdaterNode,
-  diamond: DiamondNode,
-  actionBarNode: ActionBarNodeDemo,
-  buttonHandle: ButtonHandleDemo,
+import { DiamondNode } from "@/shared/ui/nodes/DiamondNode";
+import { Button } from "@/shared/ui/Button";
+import { Circle, Save } from "lucide-react";
+import { CustomNode } from "@/shared/ui/nodes/CustomNode";
+import { NodePicker } from "@/shared/ui/nodes/NodePicker";
+import { CircleNode } from "@/shared/ui/nodes/CircleNode";
+import { OvalNode } from "@/shared/ui/nodes/OvalNode";
+import { ParallelogramNode } from "@/shared/ui/nodes/ParallelogramNode";
+
+type CustomNodeData = {
+  label: string;
+  onAddClick?: (nodeId: string) => void;
 };
 
-const initialNodes: Node[] = [
-  // {
-  //   id: "0",
-  //   type: "textUpdater",
-  //   data: { label: "Node" },
-  //   position: { x: 0, y: 0 },
-  // },
-  //   {
-  //     id: "1",
-  //     type: "default",
-  //     data: { label: "Node" },
-  //     position: { x: 0, y: 0 },
-  //   },
-  //   {
-  //     id: "2",
-  //     type: "actionBarNode",
-  //     data: { label: "Node" },
-  //     position: { x: 50, y: 100 },
-  //   },
-  {
-    id: "3",
-    type: "buttonHandle",
-    data: { label: "buttonHandle" },
-    position: { x: 100, y: 200 },
-  },
-];
+export type NodeKind =
+  | "oval"
+  | "diamond"
+  | "circle"
+  | "parallelogram"
+  | "customNode";
 
-const initialEdges: Edge[] = [];
+const nodeTypes = {
+  oval: OvalNode,
+  diamond: DiamondNode,
+  circle: CircleNode,
+  parallelogram: ParallelogramNode,
+  customNode: CustomNode,
+};
 
 const fitViewOptions: FitViewOptions = {
   padding: 0.2,
 };
 
-let id = initialNodes.length + 1;
-const getId = () => `n${id++}`;
 const nodeOrigin: NodeOrigin = [0, 0];
 
 const defaultEdgeOptions: DefaultEdgeOptions = {
@@ -84,58 +67,251 @@ const onNodeDrag: OnNodeDrag = (_, node) => {
   console.log("drag event", node.data);
 };
 
+let idCounter = 4;
+const getId = () => `n${idCounter++}`;
+
 export const Flow = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [variant, setVariant] = useState<BackgroundVariant>(
     BackgroundVariant.Dots
   );
-  const { screenToFlowPosition } = useReactFlow();
 
-  const onNodesChange: OnNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes]
+  const { screenToFlowPosition } = useReactFlow();
+  const { x, y, zoom } = useViewport();
+
+  const [pickerState, setPickerState] = useState<{
+    open: boolean;
+    sourceNodeId: string | null;
+    sourceHandleId: string | null;
+  }>({
+    open: false,
+    sourceNodeId: null,
+    sourceHandleId: null,
+  });
+
+  const handleOpenNodePicker = useCallback(
+    (nodeId: string, sourceHandleId: string) => {
+      setPickerState({
+        open: true,
+        sourceNodeId: nodeId,
+        sourceHandleId,
+      });
+    },
+    []
   );
 
-  const onEdgesChange: OnEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges]
+  const handleCloseNodePicker = useCallback(() => {
+    setPickerState({
+      open: false,
+      sourceNodeId: null,
+      sourceHandleId: null,
+    });
+  }, []);
+
+  const createNode = useCallback(
+    (id: string, type: NodeKind, position: { x: number; y: number }): Node => {
+      // Circle node
+      if (type === "circle") {
+        return {
+          id,
+          type: "circle",
+          position,
+          data: { label: "A", onAddClick: handleOpenNodePicker },
+        };
+      }
+
+      // Diamond node
+      if (type === "diamond") {
+        return {
+          id,
+          type: "diamond",
+          position,
+          data: { label: "Condition", onAddClick: handleOpenNodePicker },
+        };
+      }
+
+      if (type === "oval") {
+        return {
+          id,
+          type: "oval",
+          position,
+          data: {
+            label: "Start",
+            onAddClick: handleOpenNodePicker,
+          },
+        };
+      }
+
+      if (type === "parallelogram") {
+        return {
+          id,
+          type: "parallelogram",
+          position,
+          data: {
+            label: "Input / Output",
+            onAddClick: handleOpenNodePicker,
+          },
+        };
+      }
+
+      // Default (custom node)
+      return {
+        id,
+        type: "customNode",
+        position,
+        data: {
+          label: `Node ${id}`,
+          onAddClick: handleOpenNodePicker,
+        },
+      };
+    },
+    [handleOpenNodePicker]
+  );
+
+  const initialNodes = useMemo<Node<CustomNodeData>[]>(
+    () => [createNode("3", "oval", { x: 100, y: 200 }, "Custom Node")],
+    [createNode]
+  );
+
+  const [nodes, setNodes, onNodesChange] =
+    useNodesState<Node<CustomNodeData>>(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  const pickerPosition = useMemo(() => {
+    if (!pickerState.open || !pickerState.sourceNodeId) return null;
+
+    const sourceNode = nodes.find(
+      (node) => node.id === pickerState.sourceNodeId
+    );
+    if (!sourceNode) return null;
+
+    const nodeWidth = sourceNode.measured?.width ?? 240;
+    const nodeHeight = sourceNode.measured?.height ?? 120;
+
+    const flowX = sourceNode.position.x + nodeWidth / 2;
+    const flowY = sourceNode.position.y + nodeHeight + 56;
+
+    return {
+      left: flowX * zoom + x,
+      top: flowY * zoom + y,
+    };
+  }, [pickerState.open, pickerState.sourceNodeId, nodes, x, y, zoom]);
+
+  const addStandaloneCustomNode = useCallback(() => {
+    const id = getId();
+
+    setNodes((nds) =>
+      nds.concat(
+        createNode(
+          id,
+          "customNode",
+          {
+            x: 250,
+            y: 150 + nds.length * 60,
+          },
+          `Node ${id}`
+        )
+      )
+    );
+  }, [createNode, setNodes]);
+
+  const handleAddNodeFromPicker = useCallback(
+    (type: NodeKind) => {
+      if (!pickerState.sourceNodeId) return;
+
+      const sourceNode = nodes.find(
+        (node) => node.id === pickerState.sourceNodeId
+      );
+      if (!sourceNode) return;
+
+      const sourceChildren = edges.filter(
+        (edge) => edge.source === pickerState.sourceNodeId
+      );
+
+      const childCount = sourceChildren.length;
+      const spacingX = 220;
+      const levelY = 180;
+
+      let offsetX = 0;
+
+      if (childCount === 0) {
+        offsetX = 0;
+      } else {
+        const direction = childCount % 2 === 1 ? -1 : 1;
+        const step = Math.ceil(childCount / 2);
+        offsetX = direction * step * spacingX;
+      }
+
+      const newId = getId();
+
+      const newPosition = {
+        x: sourceNode.position.x + offsetX,
+        y: sourceNode.position.y + levelY,
+      };
+
+      const newNode = createNode(newId, type, newPosition);
+
+      setNodes((nds) => [...nds, newNode]);
+      setEdges((eds) => [
+        ...eds,
+        {
+          id: `e-${pickerState.sourceNodeId}-${newId}`,
+          source: pickerState.sourceNodeId,
+          target: newId,
+          animated: true,
+        },
+      ]);
+
+      handleCloseNodePicker();
+    },
+    [
+      pickerState.sourceNodeId,
+      nodes,
+      edges,
+      createNode,
+      setNodes,
+      setEdges,
+      handleCloseNodePicker,
+    ]
   );
 
   const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    (connection) => {
+      setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
+    },
     [setEdges]
   );
 
   const onConnectEnd: OnConnectEnd = useCallback(
     (event, connectionState) => {
-      // when a connection is dropped on the pane it's not valid
-      if (!connectionState.isValid) {
-        // we need to remove the wrapper bounds, in order to get the correct position
-        const id = getId();
-        const { clientX, clientY } =
-          "changedTouches" in event ? event.changedTouches[0] : event;
-        const newNode = {
-          id,
-          position: screenToFlowPosition({
-            x: clientX,
-            y: clientY,
-          }),
-          data: { label: `Node ${id}` },
-          origin: [0.0, 0.0],
-        };
+      if (!connectionState.fromNode) return;
+      if (connectionState.isValid) return;
 
-        setNodes((nds) => nds.concat(newNode));
-        setEdges((eds) =>
-          eds.concat({ id, source: connectionState.fromNode.id, target: id })
-        );
-      }
+      const id = getId();
+      const { clientX, clientY } =
+        "changedTouches" in event ? event.changedTouches[0] : event;
+
+      const position = screenToFlowPosition({
+        x: clientX,
+        y: clientY,
+      });
+
+      const newNode = createNode(id, "customNode", position);
+
+      setNodes((nds) => nds.concat(newNode));
+      setEdges((eds) =>
+        eds.concat({
+          id: `e-${connectionState.fromNode.id}-${id}`,
+          source: connectionState.fromNode.id,
+          target: id,
+          animated: true,
+        })
+      );
     },
-    [screenToFlowPosition]
+    [screenToFlowPosition, createNode, setNodes, setEdges]
   );
 
   return (
-    <section className="h-screen w-screen border-accent">
+    <section className="relative h-screen w-screen border-accent">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -149,25 +325,21 @@ export const Flow = () => {
         fitViewOptions={fitViewOptions}
         nodeOrigin={nodeOrigin}
         defaultEdgeOptions={defaultEdgeOptions}
+        onPaneClick={handleCloseNodePicker}
       >
         <Controls />
         <MiniMap nodeStrokeWidth={3} zoomable pannable />
         <Background color="#E0D9F5" variant={variant} size={3} />
+
         <Panel position="top-left" className="flex flex-col gap-2">
-          <p>Drag shapes to the canvas</p>
           <div className="flex items-center gap-2 rounded-md border border-gray-300 bg-white p-2 shadow">
-            <Button variant="outline" onClick={() => {}}>
+            <Button variant="outline" onClick={addStandaloneCustomNode}>
               <Circle className="size-5 shrink-0" />
-            </Button>
-            <Button variant="outline" onClick={() => {}}>
-              <Square className="size-5 shrink-0" />
-            </Button>
-            <Button variant="outline" onClick={() => {}}>
-              <Diamond className="size-5 shrink-0" />
             </Button>
           </div>
         </Panel>
-        <Panel
+
+        {/* <Panel
           position="top-center"
           className="flex flex-col items-center gap-1"
         >
@@ -183,16 +355,25 @@ export const Flow = () => {
               cross
             </Button>
           </div>
-        </Panel>
+        </Panel> */}
 
         <Panel position="bottom-center">
-          <Button variant="default" onClick={() => {}}>
-            <Save />
+          <Button
+            variant="default"
+            onClick={() => console.log({ nodes, edges })}
+          >
+            <Save className="mr-2 size-4" />
             Save
           </Button>
         </Panel>
-        {/* <DevTools position="top-right" /> */}
       </ReactFlow>
+
+      <NodePicker
+        open={pickerState.open}
+        position={pickerPosition}
+        onClose={handleCloseNodePicker}
+        onSelect={handleAddNodeFromPicker}
+      />
     </section>
   );
 };

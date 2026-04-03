@@ -3,24 +3,24 @@ import type { ChangeEvent } from "react";
 import {
   type Node,
   type NodeProps,
+  type ConnectionState,
   Position,
   useConnection,
   useNodeId,
   useReactFlow,
-  type ConnectionState,
 } from "@xyflow/react";
 import { BaseHandle } from "../handles/BaseHandle";
 import { AddNodeHandle } from "../handles/AddNodeHandle";
 
-type DiamondNodeData = Node<{
+type CircleNodeData = Node<{
   label: string;
   onAddClick?: (nodeId: string) => void;
 }>;
 
 const selector = (connection: ConnectionState) => connection.inProgress;
 
-export const DiamondNode = memo(
-  ({ data, selected }: NodeProps<DiamondNodeData>) => {
+export const CircleNode = memo(
+  ({ data, selected, width, height }: NodeProps<CircleNodeData>) => {
     const id = useNodeId();
     const connectionInProgress = useConnection(selector);
     const [isHovered, setIsHovered] = useState(false);
@@ -57,14 +57,16 @@ export const DiamondNode = memo(
 
     const showAddButton = !connectionInProgress && (isHovered || selected);
 
+    const nodeSize = Math.max(width ?? 96, height ?? 96, 96);
+
     return (
       <div
-        className="relative flex h-36 w-36 items-center justify-center overflow-visible"
+        className="relative flex size-24 items-center justify-center"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <BaseHandle id="target-top" type="target" position={Position.Top} />
-        <BaseHandle id="target-right" type="target" position={Position.Right} />
+        <BaseHandle id="source-right" type="target" position={Position.Right} />
         <BaseHandle
           id="source-bottom"
           type="source"
@@ -72,15 +74,13 @@ export const DiamondNode = memo(
         />
         <BaseHandle id="target-left" type="target" position={Position.Left} />
 
-        <div className="relative z-0 flex h-26 w-26 rotate-45 items-center justify-center rounded-sm border border-node-border bg-node-bg shadow-[0_6px_16px_var(--color-node-shadow)]">
-          <div className="-rotate-45 px-2">
-            <input
-              value={data.label ?? "Condition"}
-              onChange={handleChange}
-              className="nodrag w-20 border-none bg-transparent text-center text-xs font-medium text-text-primary outline-none placeholder:text-text-muted"
-              placeholder="Condition"
-            />
-          </div>
+        <div className="flex h-full w-full items-center justify-center rounded-full border border-node-border bg-node-bg shadow-[0_6px_20px_var(--color-node-shadow)]">
+          <input
+            value={data.label ?? "A"}
+            onChange={handleChange}
+            className="nodrag w-12 bg-transparent text-center text-sm font-medium text-text-primary outline-none placeholder:text-text-muted"
+            placeholder="A"
+          />
         </div>
 
         <AddNodeHandle show={showAddButton} onClick={handleOpenPicker} />
