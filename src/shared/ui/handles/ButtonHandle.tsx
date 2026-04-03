@@ -1,6 +1,6 @@
+import { cn } from "@/shared/lib";
 import { Position, type HandleProps } from "@xyflow/react";
 import { BaseHandle } from "./BaseHandle";
-import { cn } from "@/shared/lib/cn";
 
 const wrapperClassNames: Record<Position, string> = {
   [Position.Top]:

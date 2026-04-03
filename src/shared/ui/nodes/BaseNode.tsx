@@ -1,19 +1,19 @@
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/shared/lib";
 import type { ComponentProps } from "react";
 
 function BaseNode({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "bg-card text-card-foreground relative rounded-md border",
-        "hover:ring-1",
+        "bg-card text-card-foreground relative rounded-md border border-node-border bg-node-bg",
+        "hover:outline hover:outline-node-border",
         // React Flow displays node elements inside of a `NodeWrapper`
         // component, which compiles down to a div with the class
         // `react-flow__node`. When a node is selected, the class `selected` is
         // added to the `react-flow__node` element. This allows us to style the
         // node when it is selected.
-        "in-[.selected]:border-muted-foreground",
-        "in-[.selected]:shadow-lg",
+        "in-[.selected]:outline-node-border",
+        "in-[.selected]:shadow-lg in-[.selected]:shadow-node-shadow in-[.selected]:outline in-[.selected]:outline-node-border",
         className
       )}
       tabIndex={0}
@@ -79,8 +79,8 @@ function BaseNodeFooter({ className, ...props }: ComponentProps<"div">) {
 
 export {
   BaseNode,
-  BaseNodeHeader,
-  BaseNodeHeaderTitle,
   BaseNodeContent,
   BaseNodeFooter,
+  BaseNodeHeader,
+  BaseNodeHeaderTitle,
 };

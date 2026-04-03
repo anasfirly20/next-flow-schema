@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css";
 import { ReactFlowProvider } from "@xyflow/react";
+
+import "./globals.css";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -20,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
-      <ReactFlowProvider>
-        <body className="mx-auto max-w-480">{children}</body>
-      </ReactFlowProvider>
+      <body className="mx-auto max-w-480">
+        <ReactFlowProvider>{children}</ReactFlowProvider>
+      </body>
     </html>
   );
 }

@@ -1,16 +1,17 @@
-import { memo, useCallback, useState } from "react";
-import type { ChangeEvent } from "react";
+import { useUpdateNodeData } from "@/shared/lib/useUpdateNodeData";
 import {
+  type ConnectionState,
   type Node,
   type NodeProps,
   Position,
   useConnection,
   useNodeId,
-  useReactFlow,
-  type ConnectionState,
 } from "@xyflow/react";
-import { BaseHandle } from "../handles/BaseHandle";
+import { memo, useCallback, useState } from "react";
+import { EditableText } from "../EditableText";
 import { AddNodeHandle } from "../handles/AddNodeHandle";
+import { BaseHandle } from "../handles/BaseHandle";
+import { BaseNode } from "./BaseNode";
 
 type DiamondNodeData = Node<{
   label: string;
@@ -25,36 +26,12 @@ export const DiamondNode = memo(
     const connectionInProgress = useConnection(selector);
     const [isHovered, setIsHovered] = useState(false);
 
-    const { setNodes } = useReactFlow();
-
-    const handleChange = useCallback(
-      (evt: ChangeEvent<HTMLInputElement>) => {
-        const value = evt.target.value;
-
-        if (!id) return;
-
-        setNodes((nodes) =>
-          nodes.map((node) =>
-            node.id === id
-              ? {
-                  ...node,
-                  data: {
-                    ...node.data,
-                    label: value,
-                  },
-                }
-              : node
-          )
-        );
-      },
-      [id, setNodes]
-    );
-
     const handleOpenPicker = useCallback(() => {
       if (!id) return;
       data.onAddClick?.(id);
     }, [id, data]);
 
+    const updateNodeData = useUpdateNodeData();
     const showAddButton = !connectionInProgress && (isHovered || selected);
 
     return (
@@ -72,16 +49,17 @@ export const DiamondNode = memo(
         />
         <BaseHandle id="target-left" type="target" position={Position.Left} />
 
-        <div className="relative z-0 flex h-26 w-26 rotate-45 items-center justify-center rounded-sm border border-node-border bg-node-bg shadow-[0_6px_16px_var(--color-node-shadow)]">
+        <BaseNode className="relative z-0 flex size-26 rotate-45 items-center justify-center rounded-sm">
           <div className="-rotate-45 px-2">
-            <input
-              value={data.label ?? "Condition"}
-              onChange={handleChange}
-              className="nodrag w-20 border-none bg-transparent text-center text-xs font-medium text-text-primary outline-none placeholder:text-text-muted"
-              placeholder="Condition"
-            />
+            <EditableText
+              value={data.label}
+              fallback="Condition"
+              onCommit={(value) => updateNodeData({ label: value })}
+            >
+              <EditableText.Content className="max-w-25 text-xs font-medium text-text-primary" />
+            </EditableText>
           </div>
-        </div>
+        </BaseNode>
 
         <AddNodeHandle show={showAddButton} onClick={handleOpenPicker} />
       </div>

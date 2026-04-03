@@ -1,8 +1,8 @@
-import { Circle, Diamond, Slash, Square, X } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
-import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/ToggleGroup";
-import { cn } from "@/shared/lib/cn";
-import { NodeKind } from "@/pages/home/ui/Flow";
+import type { NodeTypes } from "@/entities/flow-data";
+import { cn } from "@/shared/lib";
+import { Circle, Diamond, Slash, X } from "lucide-react";
+import { Button } from "../Button";
+import { ToggleGroup, ToggleGroupItem } from "../ToggleGroup";
 
 type NodePickerProps = {
   open: boolean;
@@ -11,11 +11,11 @@ type NodePickerProps = {
     top: number;
   } | null;
   onClose: () => void;
-  onSelect: (type: NodeKind) => void;
+  onSelect: (type: NodeTypes) => void;
 };
 
 const options: {
-  value: NodeKind;
+  value: NodeTypes;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
 }[] = [
@@ -50,7 +50,7 @@ export function NodePicker({
       style={{
         left: position.left,
         top: position.top,
-        transform: "translate(-50%, -50%)",
+        transform: "translate(-50%, -15%)",
         boxShadow: "0 12px 32px var(--color-node-shadow)",
       }}
       onClick={(e) => e.stopPropagation()}
@@ -80,7 +80,7 @@ export function NodePicker({
         spacing={5}
         onValueChange={(value) => {
           if (!value) return;
-          onSelect(value as NodeKind);
+          onSelect(value as NodeTypes);
         }}
       >
         {options.map(({ value, label, icon: Icon }) => (
@@ -89,7 +89,7 @@ export function NodePicker({
             value={value}
             aria-label={label}
             className={cn(
-              "group h-auto rounded-2xl border border-node-border/35 bg-node-bg px-3 py-3",
+              "group h-auto cursor-pointer rounded-2xl border border-node-border/35 bg-node-bg p-3",
               "flex flex-col items-center justify-center gap-2",
               "transition-all duration-200",
               "hover:-translate-y-0.5 hover:border-accent hover:bg-bg-secondary",
