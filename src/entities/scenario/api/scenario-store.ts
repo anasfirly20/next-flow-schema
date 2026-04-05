@@ -155,7 +155,7 @@ export const useScenarioStore = create<ScenarioStore>()(
         try {
           await wait(500);
 
-          const { nodes, edges } = useChartStore.getState();
+          const { nodes, edges, markSaved } = useChartStore.getState();
           const now = new Date().toISOString();
 
           const nextScenarios = scenarios.map((scenario) =>
@@ -173,6 +173,8 @@ export const useScenarioStore = create<ScenarioStore>()(
             scenarios: nextScenarios,
             isSaving: false,
           });
+
+          markSaved();
         } catch {
           set({
             isSaving: false,

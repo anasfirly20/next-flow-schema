@@ -52,6 +52,7 @@ export const Flow = () => {
     (state) => state.saveActiveScenario
   );
   const isSaving = useScenarioStore((state) => state.isSaving);
+  const isDirty = useChartStore((state) => state.isDirty);
 
   const [pickerState, setPickerState] = useState<PickerState>({
     open: false,
@@ -245,8 +246,13 @@ export const Flow = () => {
         )}
 
         <Panel position="bottom-center">
-          <Button variant="default" onClick={saveActiveScenario}>
-            <Save className={cn("mr-2 size-4")} />
+          <Button
+            variant="default"
+            onClick={saveActiveScenario}
+            isLoading={isSaving}
+            disabled={isSaving || !isDirty}
+          >
+            <Save className={cn("mr-2 size-4", isSaving && "hidden")} />
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </Panel>

@@ -1,12 +1,15 @@
 import type { EdgeChange, NodeChange, XYPosition } from "@xyflow/react";
 import { applyEdgeChanges, applyNodeChanges } from "@xyflow/react";
 import { create } from "zustand";
+import { createChartSnapshot, getDirtyState } from "../lib/snapshot";
 import { createChartNode } from "../model/node-factory";
 import type { ChartEdge, ChartNode, NodeTypes } from "../model/nodes";
 
 type ChartStore = {
   nodes: ChartNode[];
   edges: ChartEdge[];
+  lastSavedSnapshot: string | null;
+  isDirty: boolean;
 
   setNodes: (
     updater: ChartNode[] | ((nodes: ChartNode[]) => ChartNode[])
@@ -17,6 +20,7 @@ type ChartStore = {
 
   setChart: (payload: { nodes: ChartNode[]; edges: ChartEdge[] }) => void;
   resetChart: () => void;
+  markSaved: () => void;
 
   onNodesChange: (changes: NodeChange<ChartNode>[]) => void;
   onEdgesChange: (changes: EdgeChange<ChartEdge>[]) => void;
@@ -44,30 +48,82 @@ type ChartStore = {
 export const useChartStore = create<ChartStore>((set, get) => ({
   nodes: [],
   edges: [],
+  lastSavedSnapshot: null,
+  isDirty: false,
 
   setNodes: (updater) =>
-    set((state) => ({
-      nodes: typeof updater === "function" ? updater(state.nodes) : updater,
-    })),
+    set((state) => {
+      const nextNodes =
+        typeof updater === "function" ? updater(state.nodes) : updater;
+
+      return {
+        nodes: nextNodes,
+        isDirty: getDirtyState(nextNodes, state.edges, state.lastSavedSnapshot),
+      };
+    }),
 
   setEdges: (updater) =>
-    set((state) => ({
-      edges: typeof updater === "function" ? updater(state.edges) : updater,
-    })),
+    set((state) => {
+      const nextEdges =
+        typeof updater === "function" ? updater(state.edges) : updater;
 
-  setChart: ({ nodes, edges }) => set({ nodes, edges }),
+      return {
+        edges: nextEdges,
+        isDirty: getDirtyState(state.nodes, nextEdges, state.lastSavedSnapshot),
+      };
+    }),
 
-  resetChart: () => set({ nodes: [], edges: [] }),
+  setChart: ({ nodes, edges }) => {
+    const snapshot = createChartSnapshot(nodes, edges);
+
+    set({
+      nodes,
+      edges,
+      lastSavedSnapshot: snapshot,
+      isDirty: false,
+    });
+  },
+
+  resetChart: () => {
+    const snapshot = createChartSnapshot([], []);
+
+    set({
+      nodes: [],
+      edges: [],
+      lastSavedSnapshot: snapshot,
+      isDirty: false,
+    });
+  },
+
+  markSaved: () =>
+    set((state) => {
+      const snapshot = createChartSnapshot(state.nodes, state.edges);
+
+      return {
+        lastSavedSnapshot: snapshot,
+        isDirty: false,
+      };
+    }),
 
   onNodesChange: (changes) =>
-    set((state) => ({
-      nodes: applyNodeChanges<ChartNode>(changes, state.nodes),
-    })),
+    set((state) => {
+      const nextNodes = applyNodeChanges<ChartNode>(changes, state.nodes);
+
+      return {
+        nodes: nextNodes,
+        isDirty: getDirtyState(nextNodes, state.edges, state.lastSavedSnapshot),
+      };
+    }),
 
   onEdgesChange: (changes) =>
-    set((state) => ({
-      edges: applyEdgeChanges<ChartEdge>(changes, state.edges),
-    })),
+    set((state) => {
+      const nextEdges = applyEdgeChanges<ChartEdge>(changes, state.edges);
+
+      return {
+        edges: nextEdges,
+        isDirty: getDirtyState(state.nodes, nextEdges, state.lastSavedSnapshot),
+      };
+    }),
 
   getNextNodeId: () => {
     const nodes = get().nodes;
@@ -91,7 +147,7 @@ export const useChartStore = create<ChartStore>((set, get) => ({
   },
 
   addNodeWithEdge: ({ sourceNodeId, type, label }) => {
-    const { nodes, edges, createNode } = get();
+    const { nodes, edges, createNode, lastSavedSnapshot } = get();
 
     const sourceNode = nodes.find((node) => node.id === sourceNodeId);
     if (!sourceNode) return;
@@ -119,29 +175,38 @@ export const useChartStore = create<ChartStore>((set, get) => ({
 
     const newNode = createNode(type, newPosition, label);
 
-    set((state) => ({
-      nodes: [...state.nodes, newNode],
-      edges: [
-        ...state.edges,
-        {
-          id: `e-${sourceNodeId}-${newNode.id}`,
-          source: sourceNodeId,
-          target: newNode.id,
-          animated: true,
-        },
-      ],
-    }));
+    const nextNodes = [...nodes, newNode];
+    const nextEdges = [
+      ...edges,
+      {
+        id: `e-${sourceNodeId}-${newNode.id}`,
+        source: sourceNodeId,
+        target: newNode.id,
+        animated: true,
+      },
+    ];
+
+    set({
+      nodes: nextNodes,
+      edges: nextEdges,
+      isDirty: getDirtyState(nextNodes, nextEdges, lastSavedSnapshot),
+    });
   },
 
   addStandaloneNode: ({ type, position, label }) => {
+    const { nodes, edges, lastSavedSnapshot } = get();
+
     const newNode = get().createNode(
       type,
       position ?? { x: 300, y: 180 },
       label
     );
 
-    set((state) => ({
-      nodes: [...state.nodes, newNode],
-    }));
+    const nextNodes = [...nodes, newNode];
+
+    set({
+      nodes: nextNodes,
+      isDirty: getDirtyState(nextNodes, edges, lastSavedSnapshot),
+    });
   },
 }));
