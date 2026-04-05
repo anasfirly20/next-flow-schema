@@ -1,10 +1,8 @@
-import {
-  CircleNode,
-  CustomNode,
-  DiamondNode,
-  OvalNode,
-  ParallelogramNode,
-} from "@/shared/ui";
+import { CircleNode } from "@/shared/ui/nodes/CircleNode";
+import { CustomNode } from "@/shared/ui/nodes/CustomNode";
+import { DiamondNode } from "@/shared/ui/nodes/DiamondNode";
+import { OvalNode } from "@/shared/ui/nodes/OvalNode";
+import { ParallelogramNode } from "@/shared/ui/nodes/ParallelogramNode";
 
 const NODE_TYPES = {
   oval: OvalNode,

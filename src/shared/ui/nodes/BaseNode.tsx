@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib";
+import { cn } from "@/shared/lib/cn";
 import type { ComponentProps } from "react";
 
 function BaseNode({ className, ...props }: ComponentProps<"div">) {

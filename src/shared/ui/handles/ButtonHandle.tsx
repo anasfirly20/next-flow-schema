@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib";
+import { cn } from "@/shared/lib/cn";
 import { Position, type HandleProps } from "@xyflow/react";
 import { BaseHandle } from "./BaseHandle";
 

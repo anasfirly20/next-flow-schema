@@ -1,5 +1,5 @@
 import type { NodeTypes } from "@/entities/flow-data";
-import { cn } from "@/shared/lib";
+import { cn } from "@/shared/lib/cn";
 import { Circle, Diamond, Slash, X } from "lucide-react";
 import { Button } from "../Button";
 import { ToggleGroup, ToggleGroupItem } from "../ToggleGroup";

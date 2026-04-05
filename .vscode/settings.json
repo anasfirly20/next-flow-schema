@@ -1,8 +1,7 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.sortImports": "always",
-    "source.removeUnusedImports": "always"
+    "source.sortImports": "always"
   },
   "editor.formatOnSave": true,
   "eslint.validate": [

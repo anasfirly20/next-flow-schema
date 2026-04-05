@@ -1,16 +1,16 @@
-import { memo, useCallback, useState } from "react";
+import { useUpdateNodeData } from "@/shared/hooks/useUpdateNodeData";
 import {
+  type ConnectionState,
   type Node,
   type NodeProps,
-  type ConnectionState,
   Position,
   useConnection,
   useNodeId,
 } from "@xyflow/react";
-import { BaseHandle } from "../handles/BaseHandle";
-import { AddNodeHandle } from "../handles/AddNodeHandle";
+import { memo, useCallback, useState } from "react";
 import { EditableText } from "../EditableText";
-import { useUpdateNodeData } from "@/shared/lib/useUpdateNodeData";
+import { AddNodeHandle } from "../handles/AddNodeHandle";
+import { BaseHandle } from "../handles/BaseHandle";
 import { BaseNode } from "./BaseNode";
 
 type OvalNodeData = Node<{

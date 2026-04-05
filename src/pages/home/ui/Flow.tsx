@@ -21,8 +21,9 @@ import "@xyflow/react/dist/style.css";
 import { useCallback, useMemo, useState } from "react";
 
 import { NODE_TYPES, NodeTypes } from "@/entities/flow-data";
-import { cn } from "@/shared/lib";
-import { Button, NodePicker } from "@/shared/ui";
+import { cn } from "@/shared/lib/cn";
+import { Button } from "@/shared/ui/Button";
+import { NodePicker } from "@/shared/ui/nodes/NodePicker";
 import { Save } from "lucide-react";
 
 const fitViewOptions: FitViewOptions = {

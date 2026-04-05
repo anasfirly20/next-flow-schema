@@ -1,4 +1,4 @@
-import { useUpdateNodeData } from "@/shared/lib/useUpdateNodeData";
+import { useUpdateNodeData } from "@/shared/hooks/useUpdateNodeData";
 import {
   type ConnectionState,
   type Node,

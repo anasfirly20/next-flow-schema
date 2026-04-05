@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib";
+import { cn } from "@/shared/lib/cn";
 import { Handle } from "@xyflow/react";
 import type { ComponentProps } from "react";
 
