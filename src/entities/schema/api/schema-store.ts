@@ -1,6 +1,7 @@
 import { useChartStore } from "@/entities/chart";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getSchemaIdFromUrl, setSchemaIdInUrl } from "../lib/schema-url";
 import { mockSchemas } from "../model/mock";
 import type { Schema } from "../model/types";
 
@@ -61,7 +62,14 @@ export const useSchemaStore = create<SchemaStore>()(
           const schemas =
             get().schemas.length > 0 ? get().schemas : mockSchemas;
 
-          const activeSchemaId = get().activeSchemaId ?? schemas[0]?.id ?? null;
+          const schemaIdFromUrl = getSchemaIdFromUrl();
+
+          const schemaFromUrl = schemaIdFromUrl
+            ? schemas.find((schema) => schema.id === schemaIdFromUrl)
+            : null;
+
+          const activeSchemaId =
+            schemaFromUrl?.id ?? get().activeSchemaId ?? schemas[0]?.id ?? null;
 
           set({
             schemas,
@@ -70,20 +78,22 @@ export const useSchemaStore = create<SchemaStore>()(
           });
 
           const activeSchema =
-            schemas.find((schema) => schema.id === activeSchemaId) ??
-            schemas[0] ??
-            null;
+            schemas.find((schema) => schema.id === activeSchemaId) ?? null;
 
           if (activeSchema) {
             useChartStore.getState().setChart({
               nodes: activeSchema.nodes,
               edges: activeSchema.edges,
             });
+
+            setSchemaIdInUrl(activeSchema.id);
           } else {
             useChartStore.getState().setChart({
               nodes: [],
               edges: [],
             });
+
+            setSchemaIdInUrl(null);
           }
         } catch {
           set({
@@ -103,13 +113,15 @@ export const useSchemaStore = create<SchemaStore>()(
           nodes: schema.nodes,
           edges: schema.edges,
         });
+
+        setSchemaIdInUrl(schemaId);
       },
 
       createSchema: async () => {
         set({ isLoading: true, error: null });
 
         try {
-          // await wait(350);
+          await wait(350);
 
           const schemas = get().schemas;
 
@@ -133,6 +145,8 @@ export const useSchemaStore = create<SchemaStore>()(
             nodes: [],
             edges: [],
           });
+
+          setSchemaIdInUrl(newSchema.id);
 
           return newSchema.id;
         } catch {
@@ -223,11 +237,15 @@ export const useSchemaStore = create<SchemaStore>()(
               nodes: nextActiveSchema.nodes,
               edges: nextActiveSchema.edges,
             });
+
+            setSchemaIdInUrl(nextActiveSchema.id);
           } else {
             useChartStore.getState().setChart({
               nodes: [],
               edges: [],
             });
+
+            setSchemaIdInUrl(null);
           }
         }
       },
