@@ -1,15 +1,16 @@
-import type { NodeTypes } from "@/entities/flow-data";
+import type { NodeTypes } from "@/entities/chart";
 import { cn } from "@/shared/lib/cn";
 import { Circle, Diamond, Slash, X } from "lucide-react";
+import { ComponentType } from "react";
 import { Button } from "../Button";
 import { ToggleGroup, ToggleGroupItem } from "../ToggleGroup";
 
 type NodePickerProps = {
-  open: boolean;
   position: {
     left: number;
     top: number;
   } | null;
+  inline?: boolean;
   onClose: () => void;
   onSelect: (type: NodeTypes) => void;
 };
@@ -17,42 +18,39 @@ type NodePickerProps = {
 const options: {
   value: NodeTypes;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
 }[] = [
   { value: "oval", label: "Start / End", icon: Circle },
-  {
-    value: "diamond",
-    label: "Condition",
-    icon: Diamond,
-  },
-  {
-    value: "circle",
-    label: "Connector",
-    icon: Circle,
-  },
+  { value: "diamond", label: "Condition", icon: Diamond },
+  { value: "circle", label: "Connector", icon: Circle },
   { value: "parallelogram", label: "Input / Output", icon: Slash },
 ];
 
 export function NodePicker({
-  open,
   position,
+  inline = false,
   onClose,
   onSelect,
 }: NodePickerProps) {
-  if (!open || !position) return null;
-
   return (
     <div
       className={cn(
-        "absolute z-50 w-75 rounded-2xl border bg-toolbar-bg p-3 shadow-lg backdrop-blur-sm",
-        "border-node-border/30"
+        "z-50 w-75 rounded-2xl border bg-toolbar-bg p-3 shadow-lg backdrop-blur-sm",
+        "border-node-border/30",
+        inline ? "relative" : "absolute"
       )}
-      style={{
-        left: position.left,
-        top: position.top,
-        transform: "translate(-50%, -15%)",
-        boxShadow: "0 12px 32px var(--color-node-shadow)",
-      }}
+      style={
+        inline
+          ? {
+              boxShadow: "0 12px 32px var(--color-node-shadow)",
+            }
+          : {
+              left: position?.left ?? 0,
+              top: position?.top ?? 0,
+              transform: "translate(-50%, -15%)",
+              boxShadow: "0 12px 32px var(--color-node-shadow)",
+            }
+      }
       onClick={(e) => e.stopPropagation()}
     >
       <div className="mb-3 flex items-center justify-between gap-3">
@@ -76,7 +74,6 @@ export function NodePicker({
       <ToggleGroup
         type="single"
         className="grid grid-cols-2"
-        value=""
         spacing={5}
         onValueChange={(value) => {
           if (!value) return;

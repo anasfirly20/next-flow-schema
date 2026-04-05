@@ -2,87 +2,61 @@
 
 import {
   addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
   Background,
   BackgroundVariant,
   Controls,
-  type Edge,
-  type FitViewOptions,
   MiniMap,
-  type Node,
-  type OnConnect,
   Panel,
   ReactFlow,
-  useEdgesState,
-  useNodesState,
-  useReactFlow,
   useViewport,
+  type OnConnect,
+  type OnEdgesChange,
+  type OnNodesChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useMemo, useState } from "react";
 
-import { NODE_TYPES, NodeTypes } from "@/entities/flow-data";
+import {
+  NODES,
+  NodeTypes,
+  useChartStore,
+  type ChartEdge,
+  type ChartNode,
+} from "@/entities/chart";
+import { useScenarioStore } from "@/entities/scenario/api/scenario-store";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/Button";
 import { NodePicker } from "@/shared/ui/nodes/NodePicker";
 import { Save } from "lucide-react";
 
-const fitViewOptions: FitViewOptions = {
-  padding: 0.8,
+type PickerState = {
+  open: boolean;
+  sourceNodeId: string | null;
+  sourceHandleId: string | null;
+  mode: "empty" | "connected";
 };
-
-const initialEdges: Edge[] = [
-  {
-    id: "e1-2",
-    source: "1",
-    target: "2",
-    animated: true,
-  },
-  {
-    id: "e2-3",
-    source: "2",
-    target: "3",
-    animated: true,
-  },
-  {
-    id: "e3-4",
-    source: "3",
-    target: "4",
-    animated: true,
-    label: "No",
-  },
-  {
-    id: "e3-5",
-    source: "3",
-    target: "5",
-    animated: true,
-    label: "Yes",
-  },
-];
 
 export const Flow = () => {
   const { x, y, zoom } = useViewport();
-  const { getNodes } = useReactFlow();
-  const getNextNodeId = useCallback(() => {
-    const nodes = getNodes();
 
-    const numericIds = nodes
-      .map((node) => Number(node.id.replace(/^n?/, "")))
-      .filter((value) => !Number.isNaN(value));
+  const nodes = useChartStore((state) => state.nodes);
+  const edges = useChartStore((state) => state.edges);
+  const setNodes = useChartStore((state) => state.setNodes);
+  const setEdges = useChartStore((state) => state.setEdges);
+  const addNodeWithEdge = useChartStore((state) => state.addNodeWithEdge);
+  const addStandaloneNode = useChartStore((state) => state.addStandaloneNode);
+  const saveActiveScenario = useScenarioStore(
+    (state) => state.saveActiveScenario
+  );
+  const isSaving = useScenarioStore((state) => state.isSaving);
 
-    const next = numericIds.length ? Math.max(...numericIds) + 1 : 1;
-
-    return `n${next}`;
-  }, [getNodes]);
-  const newId = getNextNodeId();
-
-  const [pickerState, setPickerState] = useState<{
-    open: boolean;
-    sourceNodeId: string | null;
-    sourceHandleId: string | null;
-  }>({
+  const [pickerState, setPickerState] = useState<PickerState>({
     open: false,
     sourceNodeId: null,
     sourceHandleId: null,
+    mode: "connected",
   });
 
   const handleOpenNodePicker = useCallback(
@@ -91,126 +65,101 @@ export const Flow = () => {
         open: true,
         sourceNodeId: nodeId,
         sourceHandleId,
+        mode: "connected",
       });
     },
     []
   );
+
+  const handleOpenEmptyNodePicker = useCallback(() => {
+    setPickerState({
+      open: true,
+      sourceNodeId: null,
+      sourceHandleId: null,
+      mode: "empty",
+    });
+  }, []);
 
   const handleCloseNodePicker = useCallback(() => {
     setPickerState({
       open: false,
       sourceNodeId: null,
       sourceHandleId: null,
+      mode: "connected",
     });
   }, []);
 
-  const createNode = useCallback(
-    (id: string, type: NodeTypes, position: { x: number; y: number }): Node => {
-      if (type === "circle") {
-        return {
-          id,
-          type: "circle",
-          position,
-          data: { label: "Connector", onAddClick: handleOpenNodePicker },
-        };
-      }
-
-      if (type === "diamond") {
-        return {
-          id,
-          type: "diamond",
-          position,
-          data: { label: "Condition", onAddClick: handleOpenNodePicker },
-        };
-      }
-
-      if (type === "oval") {
-        return {
-          id,
-          type: "oval",
-          position,
-          data: {
-            label: "Start",
-            onAddClick: handleOpenNodePicker,
-          },
-        };
-      }
-
-      if (type === "parallelogram") {
-        return {
-          id,
-          type: "parallelogram",
-          position,
-          data: {
-            label: "Input / Output",
-            onAddClick: handleOpenNodePicker,
-          },
-        };
-      }
-
-      return {
-        id,
-        type: "customNode",
-        position,
+  const chartNodes = useMemo(
+    () =>
+      nodes.map((node) => ({
+        ...node,
         data: {
-          label: `Node ${id}`,
+          ...node.data,
           onAddClick: handleOpenNodePicker,
         },
-      };
+      })),
+    [nodes, handleOpenNodePicker]
+  );
+
+  const handleAddNodeFromPicker = useCallback(
+    (type: NodeTypes) => {
+      if (pickerState.mode === "empty") {
+        addStandaloneNode({
+          type,
+          position: { x: 420, y: 180 },
+        });
+
+        handleCloseNodePicker();
+        return;
+      }
+
+      if (!pickerState.sourceNodeId) return;
+
+      addNodeWithEdge({
+        sourceNodeId: pickerState.sourceNodeId,
+        type,
+      });
+
+      handleCloseNodePicker();
     },
-    [handleOpenNodePicker]
+    [
+      pickerState.mode,
+      pickerState.sourceNodeId,
+      addStandaloneNode,
+      addNodeWithEdge,
+      handleCloseNodePicker,
+    ]
   );
 
-  const initialNodes = useMemo<Node[]>(
-    () => [
-      {
-        ...createNode("1", "oval", { x: 320, y: 40 }),
-        data: {
-          ...createNode("1", "oval", { x: 320, y: 40 }).data,
-          label: "Start",
-        },
-      },
-      {
-        ...createNode("2", "parallelogram", { x: 260, y: 180 }),
-        data: {
-          ...createNode("2", "parallelogram", { x: 260, y: 180 }).data,
-          label: "Enter email & password",
-        },
-      },
-      {
-        ...createNode("3", "diamond", { x: 300, y: 360 }),
-        data: {
-          ...createNode("3", "diamond", { x: 300, y: 360 }).data,
-          label: "Credentials valid?",
-        },
-      },
-      {
-        ...createNode("4", "oval", { x: 120, y: 560 }),
-        data: {
-          ...createNode("4", "oval", { x: 120, y: 560 }).data,
-          label: "Access denied",
-        },
-      },
-      {
-        ...createNode("5", "oval", { x: 500, y: 560 }),
-        data: {
-          ...createNode("5", "oval", { x: 500, y: 560 }).data,
-          label: "Dashboard",
-        },
-      },
-    ],
-    [createNode]
+  const onNodesChange: OnNodesChange<ChartNode> = useCallback(
+    (changes) => {
+      setNodes((nds) => applyNodeChanges<ChartNode>(changes, nds));
+    },
+    [setNodes]
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
+  const onEdgesChange: OnEdgesChange<ChartEdge> = useCallback(
+    (changes) => {
+      setEdges((eds) => applyEdgeChanges<ChartEdge>(changes, eds));
+    },
+    [setEdges]
+  );
+
+  const onConnect: OnConnect = useCallback(
+    (connection) => {
+      setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
+    },
+    [setEdges]
+  );
 
   const pickerPosition = useMemo(() => {
-    if (!pickerState.open || !pickerState.sourceNodeId) return null;
+    if (!pickerState.open || pickerState.mode !== "connected") return null;
+    if (!pickerState.sourceNodeId) return null;
 
     const sourceNode = nodes.find(
       (node) => node.id === pickerState.sourceNodeId
     );
+
     if (!sourceNode) return null;
 
     const nodeWidth = sourceNode.measured?.width ?? 240;
@@ -223,104 +172,84 @@ export const Flow = () => {
       left: flowX * zoom + x,
       top: flowY * zoom + y,
     };
-  }, [pickerState.open, pickerState.sourceNodeId, nodes, x, y, zoom]);
+  }, [
+    pickerState.open,
+    pickerState.mode,
+    pickerState.sourceNodeId,
+    nodes,
+    x,
+    y,
+    zoom,
+  ]);
 
-  const handleAddNodeFromPicker = useCallback(
-    (type: NodeTypes) => {
-      if (!pickerState.sourceNodeId) return;
+  const showEmptyState =
+    nodes.length === 0 && !(pickerState.open && pickerState.mode === "empty");
 
-      const sourceNode = nodes.find(
-        (node) => node.id === pickerState.sourceNodeId
-      );
-      if (!sourceNode) return;
-
-      const sourceChildren = edges.filter(
-        (edge) => edge.source === pickerState.sourceNodeId
-      );
-
-      const childCount = sourceChildren.length;
-      const spacingX = 220;
-      const levelY = 180;
-
-      let offsetX = 0;
-
-      if (childCount === 0) {
-        offsetX = 0;
-      } else {
-        const direction = childCount % 2 === 1 ? -1 : 1;
-        const step = Math.ceil(childCount / 2);
-        offsetX = direction * step * spacingX;
-      }
-
-      const newPosition = {
-        x: sourceNode.position.x + offsetX,
-        y: sourceNode.position.y + levelY,
-      };
-
-      const newNode = createNode(newId, type, newPosition);
-
-      setNodes((nds) => [...nds, newNode]);
-      setEdges((eds) => [
-        ...eds,
-        {
-          id: `e-${pickerState.sourceNodeId}-${newId}` || "",
-          source: pickerState.sourceNodeId || "",
-          target: newId,
-          animated: true,
-        },
-      ]);
-
-      handleCloseNodePicker();
-    },
-    [
-      pickerState.sourceNodeId,
-      nodes,
-      edges,
-      createNode,
-      setNodes,
-      setEdges,
-      handleCloseNodePicker,
-    ]
-  );
-
-  const onConnect: OnConnect = useCallback(
-    (connection) => {
-      setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
-    },
-    [setEdges]
-  );
+  const showEmptyNodePicker =
+    nodes.length === 0 && pickerState.open && pickerState.mode === "empty";
 
   return (
-    <section className="relative h-screen w-screen border-accent">
+    <section className="relative h-dvh border-accent">
       <ReactFlow
-        nodes={nodes}
+        nodes={chartNodes}
         edges={edges}
-        nodeTypes={NODE_TYPES}
+        nodeTypes={NODES}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
-        fitViewOptions={fitViewOptions}
         onPaneClick={handleCloseNodePicker}
       >
         <Controls />
         <MiniMap nodeStrokeWidth={3} zoomable pannable />
         <Background color="#E0D9F5" variant={BackgroundVariant.Dots} size={3} />
 
+        {showEmptyState && (
+          <Panel position="top-center">
+            <div className="mt-24 flex min-w-80 flex-col items-center rounded-2xl border border-node-border/20 bg-white p-6 text-center shadow-lg backdrop-blur-sm">
+              <h2 className="text-lg font-semibold text-text-primary">
+                This scenario is empty
+              </h2>
+
+              <p className="mt-2 text-sm text-text-muted">
+                Add the first node to start building the flow.
+              </p>
+
+              <Button className="mt-4" onClick={handleOpenEmptyNodePicker}>
+                Add first node
+              </Button>
+            </div>
+          </Panel>
+        )}
+
+        {showEmptyNodePicker && (
+          <Panel position="top-center">
+            <div className="mt-24">
+              <NodePicker
+                inline
+                position={null}
+                onClose={handleCloseNodePicker}
+                onSelect={handleAddNodeFromPicker}
+              />
+            </div>
+          </Panel>
+        )}
+
         <Panel position="bottom-center">
-          <Button variant="default">
+          <Button variant="default" onClick={saveActiveScenario}>
             <Save className={cn("mr-2 size-4")} />
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </Panel>
       </ReactFlow>
 
-      <NodePicker
-        open={pickerState.open}
-        position={pickerPosition}
-        onClose={handleCloseNodePicker}
-        onSelect={handleAddNodeFromPicker}
-      />
+      {pickerState.open && pickerState.mode === "connected" && (
+        <NodePicker
+          position={pickerPosition}
+          onClose={handleCloseNodePicker}
+          onSelect={handleAddNodeFromPicker}
+        />
+      )}
     </section>
   );
 };

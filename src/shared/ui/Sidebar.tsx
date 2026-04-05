@@ -282,7 +282,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <button
+    <Button
       data-sidebar="rail"
       data-slot="sidebar-rail"
       aria-label="Toggle Sidebar"
@@ -371,7 +371,7 @@ function SidebarSeparator({
     <Separator
       data-slot="sidebar-separator"
       data-sidebar="separator"
-      className={cn("mx-2 w-auto bg-node-border/20", className)}
+      className={cn("w-auto bg-node-border/20", className)}
       {...props}
     />
   );
