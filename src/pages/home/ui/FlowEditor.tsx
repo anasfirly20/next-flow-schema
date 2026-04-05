@@ -40,7 +40,7 @@ type PickerState = {
   mode: "empty" | "connected";
 };
 
-export const Flow = () => {
+export const FlowEditor = () => {
   const { x, y, zoom } = useViewport();
 
   const nodes = useChartStore((state) => state.nodes);

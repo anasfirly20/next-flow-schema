@@ -2,7 +2,7 @@
 
 import { useSchemaStore } from "@/entities/schema/api/schema-store";
 import { useEffect } from "react";
-import { Flow } from "./Flow";
+import { FlowEditor } from "./FlowEditor";
 
 export const HomePage = () => {
   const loadSchemas = useSchemaStore((state) => state.loadSchemas);
@@ -13,7 +13,7 @@ export const HomePage = () => {
 
   return (
     <main>
-      <Flow />
+      <FlowEditor />
     </main>
   );
 };
