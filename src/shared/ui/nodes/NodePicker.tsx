@@ -35,7 +35,7 @@ export function NodePicker({
   return (
     <div
       className={cn(
-        "z-50 w-75 rounded-2xl border bg-toolbar-bg p-3 shadow-lg backdrop-blur-sm",
+        "z-50 w-75 rounded-2xl border bg-accent-soft p-3 shadow-lg backdrop-blur-sm",
         "border-node-border/30",
         inline ? "relative" : "absolute"
       )}
@@ -64,7 +64,7 @@ export function NodePicker({
           onClick={onClose}
           className={cn(
             "size-8 rounded-xl p-0 text-text-secondary transition-all",
-            "hover:bg-bg-secondary hover:text-text-primary"
+            "hover:bg-accent/15 hover:text-text-primary"
           )}
         >
           <X className="size-4 shrink-0" />
@@ -86,7 +86,7 @@ export function NodePicker({
             value={value}
             aria-label={label}
             className={cn(
-              "group h-auto cursor-pointer rounded-2xl border border-node-border/35 bg-node-bg p-3",
+              "group h-auto cursor-pointer rounded-2xl border border-node-border/35 bg-node-bg p-4",
               "flex flex-col items-center justify-center gap-2",
               "transition-all duration-200",
               "hover:-translate-y-0.5 hover:border-accent hover:bg-bg-secondary",
@@ -95,7 +95,7 @@ export function NodePicker({
           >
             <div
               className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-xl",
+                "flex h-10 min-w-10 items-center justify-center rounded-xl",
                 "border border-accent/25 bg-accent/8",
                 "transition-colors duration-200",
                 "group-hover:border-accent/40 group-hover:bg-accent/12"

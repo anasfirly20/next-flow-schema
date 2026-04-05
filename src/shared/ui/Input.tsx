@@ -10,7 +10,7 @@ export function Input({
       type={type}
       data-slot="input"
       className={cn(
-        "h-8 w-full min-w-0 rounded-lg border border-node-border bg-node-bg px-2.5 py-1 text-sm text-text-primary transition-all outline-none",
+        "h-8 w-full min-w-0 rounded-lg border border-black bg-node-bg px-2.5 py-1 text-sm text-text-primary transition-all outline-none",
         "placeholder:text-text-muted",
         "hover:border-accent",
         "focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/30",

@@ -207,7 +207,11 @@ export const Flow = () => {
       >
         <Controls />
         <MiniMap nodeStrokeWidth={3} zoomable pannable />
-        <Background color="#E0D9F5" variant={BackgroundVariant.Dots} size={3} />
+        <Background
+          color="oklch(0.9 0.01 20)"
+          variant={BackgroundVariant.Dots}
+          size={3}
+        />
 
         {showEmptyState && (
           <Panel position="top-center">

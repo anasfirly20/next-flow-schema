@@ -159,7 +159,7 @@ function Sidebar({
       <div
         data-slot="sidebar"
         className={cn(
-          "flex h-full w-(--sidebar-width) flex-col border-r border-node-border bg-toolbar-bg text-text-primary",
+          "flex h-full w-(--sidebar-width) flex-col border-r border-node-border bg-accent-soft text-text-primary",
           className
         )}
         {...props}
@@ -178,7 +178,7 @@ function Sidebar({
           data-slot="sidebar"
           data-mobile="true"
           side={side}
-          className="w-(--sidebar-width) border-node-border bg-toolbar-bg p-0 text-text-primary [&>button]:hidden"
+          className="w-(--sidebar-width) border-node-border bg-accent-soft p-0 text-text-primary [&>button]:hidden"
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -236,12 +236,12 @@ function Sidebar({
           data-slot="sidebar-inner"
           className={cn(
             "flex size-full flex-col overflow-hidden",
-            "bg-toolbar-bg/95 text-text-primary",
+            "bg-accent-soft/95 text-text-primary",
             "backdrop-blur-sm",
             "group-data-[variant=sidebar]:border-r group-data-[variant=sidebar]:border-node-border/70",
             "group-data-[variant=floating]:rounded-2xl",
             "group-data-[variant=floating]:border group-data-[variant=floating]:border-node-border/70",
-            "group-data-[variant=floating]:bg-toolbar-bg/90",
+            "group-data-[variant=floating]:bg-accent-soft/90",
             "group-data-[variant=floating]:shadow-[0_8px_30px_color-mix(in_oklab,var(--color-node-shadow)_80%,transparent)]"
           )}
         >
@@ -344,7 +344,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-header"
       data-sidebar="header"
       className={cn(
-        "flex flex-col gap-3 border-b border-node-border/25 bg-toolbar-bg px-4 py-4",
+        "flex flex-col gap-3 border-b border-node-border/25 bg-accent-soft px-4 py-4",
         className
       )}
       {...props}
@@ -383,7 +383,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "no-scrollbar flex min-h-0 flex-1 flex-col overflow-auto bg-toolbar-bg px-2 py-3",
+        "no-scrollbar flex min-h-0 flex-1 flex-col overflow-auto bg-accent-soft px-2 py-3",
         "group-data-[collapsible=icon]:overflow-hidden",
         className
       )}

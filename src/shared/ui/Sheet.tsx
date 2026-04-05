@@ -65,7 +65,7 @@ function SheetContent({
         data-side={side}
         className={cn(
           "fixed z-50 flex flex-col gap-4 text-sm transition duration-200 ease-in-out",
-          "border-node-border bg-toolbar-bg text-text-primary shadow-lg",
+          "border-node-border bg-accent-soft text-text-primary shadow-lg",
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0",
           "data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b",

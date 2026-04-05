@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { type VariantProps } from "class-variance-authority";
 import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
+import * as React from "react";
 
 import { cn } from "../lib/cn";
 import { toggleVariants } from "./Toggle";
@@ -50,7 +50,7 @@ function ToggleGroup({
         spacing === 0 &&
           variant === "outline" &&
           "overflow-hidden border border-node-border bg-node-bg shadow-sm",
-        spacing === 0 && variant === "default" && "bg-toolbar-bg p-1",
+        spacing === 0 && variant === "default" && "bg-accent-soft p-1",
         className
       )}
       {...props}

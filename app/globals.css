@@ -6,37 +6,33 @@
 }
 
 @theme {
-  /* Backgrounds */
-  --color-bg-primary: oklch(0.9 0.06 300);
-  --color-bg-secondary: oklch(0.95 0.03 290);
-  --color-canvas: oklch(0.96 0.02 285);
+  --color-canvas: oklch(0.985 0.002 20);
+  --color-bg-primary: oklch(0.985 0.002 20);
+  --color-bg-secondary: oklch(0.972 0.003 20);
 
-  /* Nodes */
-  --color-node-bg: oklch(0.97 0.01 285);
-  --color-node-border: oklch(0.72 0.16 295);
-  --color-node-shadow: oklch(0.55 0.08 285 / 0.12);
+  --color-surface: oklch(1 0 0);
+  --color-surface-muted: oklch(0.97 0.003 20);
 
-  /* Edges */
-  --color-edge: oklch(0.35 0.02 285);
-  --color-edge-active: oklch(0.72 0.16 295);
+  --color-border: oklch(0.9 0.006 20);
+  --color-border-strong: oklch(0.83 0.01 20);
 
-  /* Text */
-  --color-text-primary: oklch(0.38 0.03 285);
-  --color-text-secondary: oklch(0.55 0.03 285);
-  --color-text-muted: oklch(0.7 0.02 285);
+  --color-node-bg: oklch(1 0 0);
+  --color-node-border: oklch(0.84 0.02 20);
+  --color-node-shadow: oklch(0.2 0.02 20 / 0.08);
 
-  /* Violet accents */
-  --color-accent: oklch(0.72 0.16 295);
-  --color-accent-hover: oklch(0.64 0.2 295);
-  --color-accent-strong: oklch(0.58 0.24 290);
+  --color-edge: oklch(0.78 0.008 20);
+  --color-edge-active: oklch(0.67 0.2 28);
 
-  /* Teal accents */
-  --color-teal: oklch(0.78 0.14 185);
-  --color-teal-hover: oklch(0.72 0.16 185);
+  --color-text-primary: oklch(0.24 0.01 20);
+  --color-text-secondary: oklch(0.43 0.01 20);
+  --color-text-muted: oklch(0.62 0.01 20);
 
-  /* Surface helpers */
-  --color-toolbar-bg: oklch(0.99 0.01 285);
-  --color-dot: oklch(0.9 0.03 285);
+  --color-accent: oklch(0.67 0.2 28);
+  --color-accent-hover: oklch(0.61 0.22 28);
+  --color-accent-strong: oklch(0.55 0.23 28);
+
+  --color-accent-soft: oklch(0.94 0.03 28);
+  --color-dot: oklch(0.91 0.003 20);
 }
 
 :root {

@@ -151,12 +151,12 @@ export function AppSidebar(props: AppSidebarProps) {
               {isLoading &&
                 Array.from({ length: 3 }).map((_, index) => (
                   <SidebarMenuItem key={`scenario-skeleton-${index}`}>
-                    <div className="flex items-start gap-3 rounded-xl bg-bg-secondary/40 px-2 py-2">
-                      <Skeleton className="mt-1 size-5 shrink-0 rounded-sm bg-bg-secondary" />
+                    <div className="flex items-start gap-3 rounded-xl bg-accent/25 px-2 py-2">
+                      <Skeleton className="mt-1 size-5 shrink-0 rounded-sm bg-accent/30" />
 
                       <div className="flex min-w-0 flex-1 flex-col gap-2">
-                        <Skeleton className="h-4 w-32 rounded-md bg-bg-secondary" />
-                        <Skeleton className="h-3 w-24 rounded-md bg-bg-secondary" />
+                        <Skeleton className="h-4 w-32 rounded-md bg-accent/30" />
+                        <Skeleton className="h-3 w-24 rounded-md bg-accent/30" />
                       </div>
                     </div>
                   </SidebarMenuItem>
@@ -202,7 +202,7 @@ export function AppSidebar(props: AppSidebarProps) {
                                     cancelRename();
                                   }
                                 }}
-                                className="rounded-md border border-node-border/30 bg-transparent px-1 text-sm font-medium text-text-primary outline-none"
+                                className="rounded-md border border-accent/50 bg-transparent px-1 text-sm font-medium text-text-primary outline-none"
                               />
                             ) : (
                               <span className="truncate text-sm font-medium">
@@ -216,7 +216,7 @@ export function AppSidebar(props: AppSidebarProps) {
                           </div>
                         </SidebarMenuButton>
 
-                        <div className="absolute top-2 right-2">
+                        <div className="absolute top-2 right-1">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
@@ -225,10 +225,10 @@ export function AppSidebar(props: AppSidebarProps) {
                                 aria-label={`Scenario actions for ${scenario.name}`}
                                 onClick={(e) => e.stopPropagation()}
                                 className={[
-                                  "flex size-8 items-center justify-center rounded-lg outline-0 transition-colors",
+                                  "flex size-8 items-center justify-center rounded-lg outline-0 transition-colors hover:bg-accent/15",
                                   isActive
-                                    ? "text-text-primary hover:bg-bg-secondary"
-                                    : "text-text-muted opacity-0 group-hover/item:opacity-100 hover:bg-bg-secondary hover:text-text-primary",
+                                    ? "text-text-primary"
+                                    : "text-text-muted opacity-0 group-hover/item:opacity-100 hover:text-text-primary",
                                 ].join(" ")}
                               >
                                 <MoreHorizontal className="size-4" />
@@ -245,6 +245,7 @@ export function AppSidebar(props: AppSidebarProps) {
                                 onSelect={() =>
                                   startRename(scenario.id, scenario.name)
                                 }
+                                className="hover:bg-accent/15 focus:bg-accent/15"
                               >
                                 <Pencil className="size-4" />
                                 <span>Edit name</span>
@@ -253,6 +254,7 @@ export function AppSidebar(props: AppSidebarProps) {
                               <DropdownMenuItem
                                 variant="destructive"
                                 onSelect={() => deleteScenario(scenario.id)}
+                                className="data-[variant=destructive]:hover:bg-accent/15 data-[variant=destructive]:focus:bg-accent/15"
                               >
                                 <Trash2 className="size-4" />
                                 <span>Delete scenario</span>
