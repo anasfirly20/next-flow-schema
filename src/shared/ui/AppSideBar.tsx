@@ -129,13 +129,15 @@ export function AppSidebar(props: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
+                <Button
+                  type="button"
+                  size="sm"
                   onClick={handleCreateScenario}
-                  className="cursor-pointer"
+                  className="h-9 w-full rounded-xl px-3 font-medium shadow-sm"
                 >
-                  <FilePlus2 />
-                  <span>Create new scenario</span>
-                </SidebarMenuButton>
+                  <FilePlus2 className="mr-1 size-4" />
+                  Add scenario
+                </Button>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

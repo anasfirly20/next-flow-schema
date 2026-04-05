@@ -110,7 +110,7 @@ export const useScenarioStore = create<ScenarioStore>()(
         set({ isLoading: true, error: null });
 
         try {
-          await wait(350);
+          // await wait(350);
 
           const scenarios = get().scenarios;
 
