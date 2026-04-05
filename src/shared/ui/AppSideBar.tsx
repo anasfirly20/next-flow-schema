@@ -32,6 +32,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "./Sidebar";
+import { Skeleton } from "./Skeleton";
 
 type AppSidebarProps = ComponentProps<typeof Sidebar>;
 
@@ -128,7 +129,10 @@ export function AppSidebar(props: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleCreateScenario}>
+                <SidebarMenuButton
+                  onClick={handleCreateScenario}
+                  className="cursor-pointer"
+                >
                   <FilePlus2 />
                   <span>Create new scenario</span>
                 </SidebarMenuButton>
@@ -144,13 +148,19 @@ export function AppSidebar(props: AppSidebarProps) {
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {isLoading && (
-                <SidebarMenuItem>
-                  <div className="px-2 py-1 text-sm text-text-muted">
-                    Loading scenarios...
-                  </div>
-                </SidebarMenuItem>
-              )}
+              {isLoading &&
+                Array.from({ length: 3 }).map((_, index) => (
+                  <SidebarMenuItem key={`scenario-skeleton-${index}`}>
+                    <div className="flex items-start gap-3 rounded-xl bg-bg-secondary/40 px-2 py-2">
+                      <Skeleton className="mt-1 size-5 shrink-0 rounded-sm bg-bg-secondary" />
+
+                      <div className="flex min-w-0 flex-1 flex-col gap-2">
+                        <Skeleton className="h-4 w-32 rounded-md bg-bg-secondary" />
+                        <Skeleton className="h-3 w-24 rounded-md bg-bg-secondary" />
+                      </div>
+                    </div>
+                  </SidebarMenuItem>
+                ))}
 
               {!isLoading && filteredScenarios.length === 0 && (
                 <SidebarMenuItem>
