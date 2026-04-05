@@ -1,6 +1,6 @@
-import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "radix-ui";
+import * as React from "react";
 import { cn } from "../lib/cn";
 import { Spinner } from "./Spinner";
 
@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: `border-accent bg-accent text-white shadow-lg hover:border-accent-hover hover:bg-accent-hover focus-visible:ring-accent`,
         outline: `border-node-border bg-node-bg text-text-primary hover:border-accent hover:bg-bg-secondary hover:text-text-primary focus-visible:ring-accent`,
-        secondary: `border-teal bg-teal text-text-primary hover:border-teal-hover hover:bg-teal-hover focus-visible:ring-teal`,
+        secondary: `border-teal bg-teal hover:border-teal-hover hover:bg-teal-hover focus-visible:ring-teal text-text-primary`,
         ghost: `border-transparent bg-transparent text-text-secondary hover:bg-bg-secondary hover:text-text-primary focus-visible:ring-accent`,
         destructive: `border-red-300 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 focus-visible:ring-red-300`,
         link: `border-transparent bg-transparent px-0 text-accent-strong underline-offset-4 hover:text-accent-hover hover:underline focus-visible:ring-accent`,
@@ -65,7 +65,7 @@ function Button({
       )}
       {...props}
     >
-      {isLoading && <Spinner className="mr-2" />}
+      {isLoading && <Spinner className="mr-1" />}
       {children}
     </Comp>
   );

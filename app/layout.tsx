@@ -13,7 +13,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "React Flow Chart",
+  title: "React Flow Schema",
 };
 
 export default function RootLayout({

@@ -371,7 +371,7 @@ function SidebarSeparator({
     <Separator
       data-slot="sidebar-separator"
       data-sidebar="separator"
-      className={cn("w-auto bg-node-border/20", className)}
+      className={cn("w-auto border-node-border/20", className)}
       {...props}
     />
   );

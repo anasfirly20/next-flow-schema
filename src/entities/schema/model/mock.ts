@@ -11,7 +11,7 @@ const loginEdges: ChartEdge[] = [
 
 export const mockSchemas: Schema[] = [
   {
-    id: "schema-1",
+    id: "1",
     name: "Login flow",
     updatedAt: new Date().toISOString(),
     nodes: [
@@ -49,7 +49,7 @@ export const mockSchemas: Schema[] = [
     edges: loginEdges,
   },
   {
-    id: "schema-2",
+    id: "2",
     name: "Signup flow",
     updatedAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
     nodes: [

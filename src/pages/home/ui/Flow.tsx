@@ -260,7 +260,7 @@ export const Flow = () => {
             isLoading={isSaving}
             disabled={isSaving || !isDirty}
           >
-            <Save className={cn("mr-2 size-4", isSaving && "hidden")} />
+            <Save className={cn("mr-1 size-4", isSaving && "hidden")} />
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </Panel>

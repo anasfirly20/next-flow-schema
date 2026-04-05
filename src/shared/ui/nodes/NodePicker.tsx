@@ -1,9 +1,21 @@
+import { OvalIcon, ParallelogramIcon } from "@/assets/icons";
 import type { NodeTypes } from "@/entities/chart";
 import { cn } from "@/shared/lib/cn";
-import { Circle, Diamond, Slash, X } from "lucide-react";
+import { Circle, Diamond, X } from "lucide-react";
 import { ComponentType } from "react";
 import { Button } from "../Button";
 import { ToggleGroup, ToggleGroupItem } from "../ToggleGroup";
+
+const options: {
+  value: NodeTypes;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+}[] = [
+  { value: "oval", label: "Start / End", icon: OvalIcon },
+  { value: "diamond", label: "Condition", icon: Diamond },
+  { value: "circle", label: "Connector", icon: Circle },
+  { value: "parallelogram", label: "Input / Output", icon: ParallelogramIcon },
+];
 
 type NodePickerProps = {
   position: {
@@ -14,17 +26,6 @@ type NodePickerProps = {
   onClose: () => void;
   onSelect: (type: NodeTypes) => void;
 };
-
-const options: {
-  value: NodeTypes;
-  label: string;
-  icon: ComponentType<{ className?: string }>;
-}[] = [
-  { value: "oval", label: "Start / End", icon: Circle },
-  { value: "diamond", label: "Condition", icon: Diamond },
-  { value: "circle", label: "Connector", icon: Circle },
-  { value: "parallelogram", label: "Input / Output", icon: Slash },
-];
 
 export function NodePicker({
   position,

@@ -106,7 +106,7 @@ export function AppSidebar(props: AppSidebarProps) {
           </div>
 
           <h1 className="text-base font-semibold text-text-primary">
-            Flow Builder
+            Schema Flow
           </h1>
         </div>
 
@@ -116,7 +116,7 @@ export function AppSidebar(props: AppSidebarProps) {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search schemas..."
+            placeholder="Search..."
             className="h-10 rounded-xl border-node-border/20 bg-node-bg pl-9 text-text-primary shadow-none placeholder:text-text-muted"
           />
         </div>
@@ -134,14 +134,14 @@ export function AppSidebar(props: AppSidebarProps) {
                   className="h-9 w-full rounded-xl px-3 font-medium shadow-sm"
                 >
                   <FilePlus2 className="mr-1 size-4" />
-                  Add schema
+                  Create schema
                 </Button>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
+        <SidebarSeparator className="my-2" />
 
         <SidebarGroup>
           <SidebarGroupLabel>Schemas</SidebarGroupLabel>
