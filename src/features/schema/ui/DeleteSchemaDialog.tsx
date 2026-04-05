@@ -43,7 +43,7 @@ export const DeleteSchemaDialog = ({
             Cancel
           </Button>
 
-          <Button variant="destructive" onClick={confirmDeleteSchema}>
+          <Button variant="default" onClick={confirmDeleteSchema}>
             Delete
           </Button>
         </DialogFooter>
