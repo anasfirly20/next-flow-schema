@@ -26,6 +26,7 @@ import {
   type ChartNode,
 } from "@/entities/chart";
 import { useScenarioStore } from "@/entities/scenario/api/scenario-store";
+import { useFlowAutosave } from "@/entities/scenario/lib/useFlowAutosave";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/Button";
 import { NodePicker } from "@/shared/ui/nodes/NodePicker";
@@ -51,8 +52,17 @@ export const Flow = () => {
   const saveActiveScenario = useScenarioStore(
     (state) => state.saveActiveScenario
   );
-  const isSaving = useScenarioStore((state) => state.isSaving);
   const isDirty = useChartStore((state) => state.isDirty);
+  const activeScenarioId = useScenarioStore((state) => state.activeScenarioId);
+  const isSaving = useScenarioStore((state) => state.isSaving);
+
+  useFlowAutosave({
+    activeScenarioId,
+    isDirty,
+    isSaving,
+    save: saveActiveScenario,
+    delay: 2000,
+  });
 
   const [pickerState, setPickerState] = useState<PickerState>({
     open: false,
