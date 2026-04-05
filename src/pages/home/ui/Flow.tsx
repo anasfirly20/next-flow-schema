@@ -29,6 +29,7 @@ import { useScenarioStore } from "@/entities/scenario/api/scenario-store";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/Button";
 import { NodePicker } from "@/shared/ui/nodes/NodePicker";
+import { SidebarTrigger } from "@/shared/ui/Sidebar";
 import { Save } from "lucide-react";
 
 type PickerState = {
@@ -190,6 +191,10 @@ export const Flow = () => {
 
   return (
     <section className="relative h-dvh border-accent">
+      <Panel position="top-left">
+        <SidebarTrigger />
+      </Panel>
+
       <ReactFlow
         nodes={chartNodes}
         edges={edges}
