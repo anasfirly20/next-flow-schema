@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import { ComponentProps, useCallback, useMemo, useState } from "react";
 
-import { useScenarioStore } from "@/entities/scenario/api/scenario-store";
-import { formatScenarioDate } from "../lib/formatScenarioDate";
+import { useSchemaStore } from "@/entities/schema/api/schema-store";
+import { formatSchemaDate } from "../lib/formatSchemaDate";
 import { Button } from "./Button";
 import {
   DropdownMenu,
@@ -37,67 +37,65 @@ import { Skeleton } from "./Skeleton";
 type AppSidebarProps = ComponentProps<typeof Sidebar>;
 
 export function AppSidebar(props: AppSidebarProps) {
-  const scenarios = useScenarioStore((state) => state.scenarios);
-  const activeScenarioId = useScenarioStore((state) => state.activeScenarioId);
-  const isLoading = useScenarioStore((state) => state.isLoading);
-  const searchQuery = useScenarioStore((state) => state.searchQuery);
+  const schemas = useSchemaStore((state) => state.schemas);
+  const activeSchemaId = useSchemaStore((state) => state.activeSchemaId);
+  const isLoading = useSchemaStore((state) => state.isLoading);
+  const searchQuery = useSchemaStore((state) => state.searchQuery);
 
-  const createScenario = useScenarioStore((state) => state.createScenario);
-  const selectScenario = useScenarioStore((state) => state.selectScenario);
-  const renameScenario = useScenarioStore((state) => state.renameScenario);
-  const deleteScenario = useScenarioStore((state) => state.deleteScenario);
-  const setSearchQuery = useScenarioStore((state) => state.setSearchQuery);
+  const createSchema = useSchemaStore((state) => state.createSchema);
+  const selectSchema = useSchemaStore((state) => state.selectSchema);
+  const renameSchema = useSchemaStore((state) => state.renameSchema);
+  const deleteSchema = useSchemaStore((state) => state.deleteSchema);
+  const setSearchQuery = useSchemaStore((state) => state.setSearchQuery);
 
-  const [editingScenarioId, setEditingScenarioId] = useState<string | null>(
-    null
-  );
+  const [editingSchemaId, setEditingSchemaId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
 
-  const filteredScenarios = useMemo(() => {
+  const filteredSchemas = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    if (!normalizedQuery) return scenarios;
+    if (!normalizedQuery) return schemas;
 
-    return scenarios.filter((scenario) =>
-      scenario.name.toLowerCase().includes(normalizedQuery)
+    return schemas.filter((schema) =>
+      schema.name.toLowerCase().includes(normalizedQuery)
     );
-  }, [scenarios, searchQuery]);
+  }, [schemas, searchQuery]);
 
   const startRename = useCallback(
-    (scenarioId: string, currentName: string) => {
-      selectScenario(scenarioId);
-      setEditingScenarioId(scenarioId);
+    (schemaId: string, currentName: string) => {
+      selectSchema(schemaId);
+      setEditingSchemaId(schemaId);
       setDraftName(currentName);
     },
-    [selectScenario]
+    [selectSchema]
   );
 
   const submitRename = useCallback(() => {
-    if (!editingScenarioId) return;
+    if (!editingSchemaId) return;
 
-    renameScenario(editingScenarioId, draftName);
-    setEditingScenarioId(null);
+    renameSchema(editingSchemaId, draftName);
+    setEditingSchemaId(null);
     setDraftName("");
-  }, [draftName, editingScenarioId, renameScenario]);
+  }, [draftName, editingSchemaId, renameSchema]);
 
   const cancelRename = useCallback(() => {
-    setEditingScenarioId(null);
+    setEditingSchemaId(null);
     setDraftName("");
   }, []);
 
-  const handleCreateScenario = useCallback(async () => {
-    const newScenarioId = await createScenario();
-    if (!newScenarioId) return;
+  const handleCreateSchema = useCallback(async () => {
+    const newSchemaId = await createSchema();
+    if (!newSchemaId) return;
 
-    const createdScenario = useScenarioStore
+    const createdSchema = useSchemaStore
       .getState()
-      .scenarios.find((scenario) => scenario.id === newScenarioId);
+      .schemas.find((schema) => schema.id === newSchemaId);
 
-    if (!createdScenario) return;
+    if (!createdSchema) return;
 
-    setEditingScenarioId(createdScenario.id);
-    setDraftName(createdScenario.name);
-  }, [createScenario]);
+    setEditingSchemaId(createdSchema.id);
+    setDraftName(createdSchema.name);
+  }, [createSchema]);
 
   return (
     <Sidebar variant="floating" {...props}>
@@ -118,7 +116,7 @@ export function AppSidebar(props: AppSidebarProps) {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search scenarios..."
+            placeholder="Search schemas..."
             className="h-10 rounded-xl border-node-border/20 bg-node-bg pl-9 text-text-primary shadow-none placeholder:text-text-muted"
           />
         </div>
@@ -132,11 +130,11 @@ export function AppSidebar(props: AppSidebarProps) {
                 <Button
                   type="button"
                   size="sm"
-                  onClick={handleCreateScenario}
+                  onClick={handleCreateSchema}
                   className="h-9 w-full rounded-xl px-3 font-medium shadow-sm"
                 >
                   <FilePlus2 className="mr-1 size-4" />
-                  Add scenario
+                  Add schema
                 </Button>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -146,13 +144,13 @@ export function AppSidebar(props: AppSidebarProps) {
         <SidebarSeparator />
 
         <SidebarGroup>
-          <SidebarGroupLabel>Scenarios</SidebarGroupLabel>
+          <SidebarGroupLabel>Schemas</SidebarGroupLabel>
 
           <SidebarGroupContent>
             <SidebarMenu>
               {isLoading &&
                 Array.from({ length: 3 }).map((_, index) => (
-                  <SidebarMenuItem key={`scenario-skeleton-${index}`}>
+                  <SidebarMenuItem key={`schema-skeleton-${index}`}>
                     <div className="flex items-start gap-3 rounded-xl bg-accent/25 px-2 py-2">
                       <Skeleton className="mt-1 size-5 shrink-0 rounded-sm bg-accent/30" />
 
@@ -164,25 +162,25 @@ export function AppSidebar(props: AppSidebarProps) {
                   </SidebarMenuItem>
                 ))}
 
-              {!isLoading && filteredScenarios.length === 0 && (
+              {!isLoading && filteredSchemas.length === 0 && (
                 <SidebarMenuItem>
                   <div className="px-2 py-1 text-sm text-text-muted">
-                    No scenarios found
+                    No schemas found
                   </div>
                 </SidebarMenuItem>
               )}
 
               {!isLoading &&
-                filteredScenarios.map((scenario) => {
-                  const isActive = scenario.id === activeScenarioId;
-                  const isEditing = scenario.id === editingScenarioId;
+                filteredSchemas.map((schema) => {
+                  const isActive = schema.id === activeSchemaId;
+                  const isEditing = schema.id === editingSchemaId;
 
                   return (
-                    <SidebarMenuItem key={scenario.id}>
+                    <SidebarMenuItem key={schema.id}>
                       <div className="group/item relative flex items-start gap-2">
                         <SidebarMenuButton
                           isActive={isActive}
-                          onClick={() => selectScenario(scenario.id)}
+                          onClick={() => selectSchema(schema.id)}
                           className="h-auto flex-1 items-start pr-10"
                         >
                           <GitBranch className="mt-0.5 shrink-0" />
@@ -208,12 +206,12 @@ export function AppSidebar(props: AppSidebarProps) {
                               />
                             ) : (
                               <span className="truncate text-sm font-medium">
-                                {scenario.name}
+                                {schema.name}
                               </span>
                             )}
 
                             <span className="text-xs text-text-muted">
-                              {formatScenarioDate(scenario.updatedAt)}
+                              {formatSchemaDate(schema.updatedAt)}
                             </span>
                           </div>
                         </SidebarMenuButton>
@@ -224,7 +222,7 @@ export function AppSidebar(props: AppSidebarProps) {
                               <Button
                                 type="button"
                                 variant="ghost"
-                                aria-label={`Scenario actions for ${scenario.name}`}
+                                aria-label={`Schema actions for ${schema.name}`}
                                 onClick={(e) => e.stopPropagation()}
                                 className={[
                                   "flex size-8 items-center justify-center rounded-lg outline-0 transition-colors hover:bg-accent/15",
@@ -245,7 +243,7 @@ export function AppSidebar(props: AppSidebarProps) {
                             >
                               <DropdownMenuItem
                                 onSelect={() =>
-                                  startRename(scenario.id, scenario.name)
+                                  startRename(schema.id, schema.name)
                                 }
                                 className="hover:bg-accent/15 focus:bg-accent/15"
                               >
@@ -255,11 +253,11 @@ export function AppSidebar(props: AppSidebarProps) {
 
                               <DropdownMenuItem
                                 variant="destructive"
-                                onSelect={() => deleteScenario(scenario.id)}
+                                onSelect={() => deleteSchema(schema.id)}
                                 className="data-[variant=destructive]:hover:bg-accent/15 data-[variant=destructive]:focus:bg-accent/15"
                               >
                                 <Trash2 className="size-4" />
-                                <span>Delete scenario</span>
+                                <span>Delete schema</span>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 type UseFlowAutosaveParams = {
-  activeScenarioId: string | null;
+  activeSchemaId: string | null;
   isDirty: boolean;
   isSaving: boolean;
   save: () => Promise<void>;
@@ -9,19 +9,19 @@ type UseFlowAutosaveParams = {
 };
 
 export function useFlowAutosave({
-  activeScenarioId,
+  activeSchemaId,
   isDirty,
   isSaving,
   save,
   delay = 2000,
 }: UseFlowAutosaveParams) {
   useEffect(() => {
-    if (!activeScenarioId || !isDirty || isSaving) return;
+    if (!activeSchemaId || !isDirty || isSaving) return;
 
     const timeoutId = window.setTimeout(() => {
       save();
     }, delay);
 
     return () => window.clearTimeout(timeoutId);
-  }, [activeScenarioId, isDirty, isSaving, save, delay]);
+  }, [activeSchemaId, isDirty, isSaving, save, delay]);
 }

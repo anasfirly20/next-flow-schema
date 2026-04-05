@@ -1,4 +1,4 @@
-export function formatScenarioDate(value: string) {
+export function formatSchemaDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
     month: "short",

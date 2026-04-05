@@ -1,6 +1,6 @@
 import { createChartNode } from "@/entities/chart/model/node-factory";
 import { ChartEdge } from "@/entities/chart/model/nodes";
-import type { Scenario } from "./types";
+import type { Schema } from "./types";
 
 const loginEdges: ChartEdge[] = [
   { id: "e1-2", source: "1", target: "2", animated: true },
@@ -9,9 +9,9 @@ const loginEdges: ChartEdge[] = [
   { id: "e3-5", source: "3", target: "5", animated: true, label: "Yes" },
 ];
 
-export const mockScenarios: Scenario[] = [
+export const mockSchemas: Schema[] = [
   {
-    id: "scenario-1",
+    id: "schema-1",
     name: "Login flow",
     updatedAt: new Date().toISOString(),
     nodes: [
@@ -49,7 +49,7 @@ export const mockScenarios: Scenario[] = [
     edges: loginEdges,
   },
   {
-    id: "scenario-2",
+    id: "schema-2",
     name: "Signup flow",
     updatedAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
     nodes: [

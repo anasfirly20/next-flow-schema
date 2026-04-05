@@ -25,8 +25,8 @@ import {
   type ChartEdge,
   type ChartNode,
 } from "@/entities/chart";
-import { useScenarioStore } from "@/entities/scenario/api/scenario-store";
-import { useFlowAutosave } from "@/entities/scenario/lib/useFlowAutosave";
+import { useSchemaStore } from "@/entities/schema/api/schema-store";
+import { useFlowAutosave } from "@/entities/schema/lib/useFlowAutosave";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/Button";
 import { NodePicker } from "@/shared/ui/nodes/NodePicker";
@@ -49,18 +49,16 @@ export const Flow = () => {
   const setEdges = useChartStore((state) => state.setEdges);
   const addNodeWithEdge = useChartStore((state) => state.addNodeWithEdge);
   const addStandaloneNode = useChartStore((state) => state.addStandaloneNode);
-  const saveActiveScenario = useScenarioStore(
-    (state) => state.saveActiveScenario
-  );
+  const saveActiveSchema = useSchemaStore((state) => state.saveActiveSchema);
   const isDirty = useChartStore((state) => state.isDirty);
-  const activeScenarioId = useScenarioStore((state) => state.activeScenarioId);
-  const isSaving = useScenarioStore((state) => state.isSaving);
+  const activeSchemaId = useSchemaStore((state) => state.activeSchemaId);
+  const isSaving = useSchemaStore((state) => state.isSaving);
 
   useFlowAutosave({
-    activeScenarioId,
+    activeSchemaId,
     isDirty,
     isSaving,
-    save: saveActiveScenario,
+    save: saveActiveSchema,
     delay: 2000,
   });
 
@@ -228,7 +226,7 @@ export const Flow = () => {
           <Panel position="top-center">
             <div className="mt-24 flex min-w-80 flex-col items-center rounded-2xl border border-node-border/20 bg-white p-6 text-center shadow-lg backdrop-blur-sm">
               <h2 className="text-lg font-semibold text-text-primary">
-                This scenario is empty
+                This schema is empty
               </h2>
 
               <p className="mt-2 text-sm text-text-muted">
@@ -258,7 +256,7 @@ export const Flow = () => {
         <Panel position="bottom-center">
           <Button
             variant="default"
-            onClick={saveActiveScenario}
+            onClick={saveActiveSchema}
             isLoading={isSaving}
             disabled={isSaving || !isDirty}
           >

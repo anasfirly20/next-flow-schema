@@ -1,15 +1,15 @@
 "use client";
 
-import { useScenarioStore } from "@/entities/scenario/api/scenario-store";
+import { useSchemaStore } from "@/entities/schema/api/schema-store";
 import { useEffect } from "react";
 import { Flow } from "./Flow";
 
 export const HomePage = () => {
-  const loadScenarios = useScenarioStore((state) => state.loadScenarios);
+  const loadSchemas = useSchemaStore((state) => state.loadSchemas);
 
   useEffect(() => {
-    loadScenarios();
-  }, [loadScenarios]);
+    loadSchemas();
+  }, [loadSchemas]);
 
   return (
     <main>
