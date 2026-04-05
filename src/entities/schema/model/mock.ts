@@ -1,5 +1,5 @@
-import { createChartNode } from "@/entities/chart/model/node-factory";
-import { ChartEdge } from "@/entities/chart/model/nodes";
+import { createChartNode } from "@/entities/chart/model/create-node";
+import { ChartEdge } from "@/entities/chart/model/node-registry";
 import type { Schema } from "./types";
 
 const loginEdges: ChartEdge[] = [

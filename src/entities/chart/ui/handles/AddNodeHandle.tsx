@@ -1,6 +1,6 @@
+import { Button } from "@/shared/ui/Button";
 import { Position } from "@xyflow/react";
 import { Plus } from "lucide-react";
-import { Button } from "../Button";
 import { ButtonHandle } from "./ButtonHandle";
 
 type AddNodeHandleProps = {

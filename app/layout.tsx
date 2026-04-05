@@ -3,7 +3,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
-import { AppSidebar } from "@/widgets/AppSidebar";
+import { AppSidebar } from "@/widgets/app-sidebar";
 import "./globals.css";
 
 const poppins = Poppins({

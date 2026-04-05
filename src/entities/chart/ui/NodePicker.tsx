@@ -1,10 +1,10 @@
 import { OvalIcon, ParallelogramIcon } from "@/assets/icons";
 import type { NodeTypes } from "@/entities/chart";
 import { cn } from "@/shared/lib/cn";
+import { Button } from "@/shared/ui/Button";
+import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/ToggleGroup";
 import { Circle, Diamond, X } from "lucide-react";
 import { ComponentType } from "react";
-import { Button } from "../Button";
-import { ToggleGroup, ToggleGroupItem } from "../ToggleGroup";
 
 const options: {
   value: NodeTypes;

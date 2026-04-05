@@ -2,8 +2,8 @@ import type { EdgeChange, NodeChange, XYPosition } from "@xyflow/react";
 import { applyEdgeChanges, applyNodeChanges } from "@xyflow/react";
 import { create } from "zustand";
 import { createChartSnapshot, getDirtyState } from "../lib/snapshot";
-import { createChartNode } from "../model/node-factory";
-import type { ChartEdge, ChartNode, NodeTypes } from "../model/nodes";
+import { createChartNode } from "../model/create-node";
+import type { ChartEdge, ChartNode, NodeTypes } from "../model/node-registry";
 
 type ChartStore = {
   nodes: ChartNode[];

@@ -25,11 +25,11 @@ import {
   type ChartEdge,
   type ChartNode,
 } from "@/entities/chart";
+import { NodePicker } from "@/entities/chart/ui/NodePicker";
 import { useSchemaStore } from "@/entities/schema/api/schema-store";
 import { useFlowAutosave } from "@/entities/schema/lib/useFlowAutosave";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/Button";
-import { NodePicker } from "@/shared/ui/nodes/NodePicker";
 import { SidebarTrigger } from "@/shared/ui/Sidebar";
 import { Save } from "lucide-react";
 

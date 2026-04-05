@@ -1,4 +1,5 @@
-import { useUpdateNodeData } from "@/shared/hooks/useUpdateNodeData";
+import { useUpdateNodeData } from "@/entities/chart/lib/useUpdateNodeData";
+import { EditableText } from "@/shared/ui/EditableText";
 import {
   type ConnectionState,
   type Node,
@@ -8,7 +9,6 @@ import {
   useNodeId,
 } from "@xyflow/react";
 import { memo, useCallback, useState } from "react";
-import { EditableText } from "../EditableText";
 import { AddNodeHandle } from "../handles/AddNodeHandle";
 import { BaseHandle } from "../handles/BaseHandle";
 import { BaseNode } from "./BaseNode";

@@ -1,4 +1,4 @@
-import type { ChartNode, CreateNodeParams } from "./nodes";
+import type { ChartNode, CreateNodeParams } from "./node-registry";
 
 export function createChartNode({
   id,

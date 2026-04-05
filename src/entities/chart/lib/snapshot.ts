@@ -1,4 +1,4 @@
-import { ChartEdge, ChartNode } from "../model/nodes";
+import { ChartEdge, ChartNode } from "../model/node-registry";
 
 function createChartSnapshot(nodes: ChartNode[], edges: ChartEdge[]) {
   return JSON.stringify({

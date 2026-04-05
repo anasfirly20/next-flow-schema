@@ -1,4 +1,12 @@
-import { memo, useCallback, useState } from "react";
+import { Button } from "@/shared/ui/Button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/DropDownMenu";
 import {
   type Node,
   ConnectionState,
@@ -9,23 +17,15 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import { EllipsisVertical, Plus } from "lucide-react";
-import { Button } from "../Button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-} from "../DropDownMenu";
-import {
-  BaseNode,
-  BaseNodeHeader,
-  BaseNodeHeaderTitle,
-  BaseNodeContent,
-} from "./BaseNode";
+import { memo, useCallback, useState } from "react";
 import { BaseHandle } from "../handles/BaseHandle";
 import { ButtonHandle } from "../handles/ButtonHandle";
+import {
+  BaseNode,
+  BaseNodeContent,
+  BaseNodeHeader,
+  BaseNodeHeaderTitle,
+} from "./BaseNode";
 
 type CustomNodeData = Node<{
   label: string;

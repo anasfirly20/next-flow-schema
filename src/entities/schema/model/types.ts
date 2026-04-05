@@ -1,4 +1,4 @@
-import { ChartEdge, ChartNode } from "@/entities/chart/model/nodes";
+import { ChartEdge, ChartNode } from "@/entities/chart/model/node-registry";
 
 export interface Schema {
   id: string;

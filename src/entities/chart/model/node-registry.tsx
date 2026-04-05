@@ -1,10 +1,10 @@
 import type { Edge, Node, XYPosition } from "@xyflow/react";
 
-import { CircleNode } from "@/shared/ui/nodes/CircleNode";
-import { CustomNode } from "@/shared/ui/nodes/CustomNode";
-import { DiamondNode } from "@/shared/ui/nodes/DiamondNode";
-import { OvalNode } from "@/shared/ui/nodes/OvalNode";
-import { ParallelogramNode } from "@/shared/ui/nodes/ParallelogramNode";
+import { CircleNode } from "@/entities/chart/ui/nodes/CircleNode";
+import { CustomNode } from "@/entities/chart/ui/nodes/CustomNode";
+import { DiamondNode } from "@/entities/chart/ui/nodes/DiamondNode";
+import { OvalNode } from "@/entities/chart/ui/nodes/OvalNode";
+import { ParallelogramNode } from "@/entities/chart/ui/nodes/ParallelogramNode";
 
 const NODES = {
   oval: OvalNode,

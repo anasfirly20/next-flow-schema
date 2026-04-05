@@ -1,9 +1,9 @@
 export { useChartStore } from "./api/chart-store";
-export { createChartNode } from "./model/node-factory";
-export { NODES } from "./model/nodes";
+export { createChartNode } from "./model/create-node";
+export { NODES } from "./model/node-registry";
 export type {
   ChartEdge,
   ChartNode,
   CreateNodeParams,
   NodeTypes,
-} from "./model/nodes";
+} from "./model/node-registry";
