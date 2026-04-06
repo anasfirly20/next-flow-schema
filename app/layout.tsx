@@ -13,7 +13,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "React Flow Schema",
+  title: "Next Flow Schema",
 };
 
 export default function RootLayout({
