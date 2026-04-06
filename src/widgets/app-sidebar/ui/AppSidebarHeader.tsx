@@ -15,7 +15,7 @@ export const AppSidebarHeader = () => {
         </div>
 
         <h1 className="text-base font-semibold text-text-primary">
-          Schema Flow
+          Flow Schema
         </h1>
       </div>
 
