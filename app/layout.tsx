@@ -1,10 +1,10 @@
-import { SidebarInset, SidebarProvider } from "@/shared/ui/Sidebar";
-import { ReactFlowProvider } from "@xyflow/react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
+import { SidebarInset } from "@/shared/ui/Sidebar";
 import { AppSidebar } from "@/widgets/app-sidebar";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -24,18 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
       <body className="mx-auto max-w-480 bg-canvas">
-        <SidebarProvider
-          style={
-            {
-              "--sidebar-width": "19rem",
-            } as React.CSSProperties
-          }
-        >
-          <ReactFlowProvider>
-            <AppSidebar />
-            <SidebarInset>{children}</SidebarInset>
-          </ReactFlowProvider>
-        </SidebarProvider>
+        <Providers>
+          <AppSidebar />
+          <SidebarInset>{children}</SidebarInset>
+        </Providers>
       </body>
     </html>
   );
